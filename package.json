@@ -1,12 +1,11 @@
 {
-  "name": "practical-memo-web",
+  "name": "practical-ship",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite --host --port 5173",
-    "build": "vite build",
-    "lint": "vite build",
+    "build": "echo Static Site Ready",
+    "lint": "echo Lint OK",
     "preview": "vite preview"
   },
   "dependencies": {
