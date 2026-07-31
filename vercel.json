@@ -1,4 +1,4 @@
 {
-  "framework": null,
-  "buildCommand": "echo 'Build complete'"
+  "buildCommand": "node -e \"const fs=require('fs'); fs.mkdirSync('public', {recursive:true}); fs.copyFileSync('index.html', 'public/index.html');\"",
+  "outputDirectory": "public"
 }
