@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PracticalShip | World-Class Pixel-Art Academic Lab Universe</title>
+  <meta name="description"
+    content="PracticalShip - World-Class Pixel-Art Academic Lab Universe inspired by Minecraft & Stardew Valley. Haldi Yellow & Royal Purple aesthetics." />
+
+  <!-- Google Fonts: Pixelify Sans & Press Start 2P -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            haldiYellow: {
+              50: '#FEFCE8',
+              100: '#FEF9C3',
+              200: '#FEF08A',
+              400: '#FACC15',
+              500: '#F6C445',
+              600: '#EAB308',
+              700: '#CA8A04',
+              DEFAULT: '#F6C445'
+            },
+            royalPurple: {
+              50: '#F5F3FF',
+              100: '#EDE9FE',
+              200: '#DDD6FE',
+              400: '#A78BFA',
+              500: '#8B5CF6',
+              600: '#6B3DF5',
+              700: '#5227D1',
+              800: '#3B18A5',
+              900: '#2E1065',
+              DEFAULT: '#6B3DF5'
+            },
+            pixelMint: '#6EE7B7',
+            pixelSky: '#7DD3FC',
+            pixelPink: '#F472B6',
+            pixelLavender: '#D8B4FE',
+            pixelCream: '#FFFDF5',
+            pixelDark: '#1E1B4B'
+          },
+          fontFamily: {
+            pixel: ['"Pixelify Sans"', '"Press Start 2P"', 'monospace'],
+            body: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 18 & ReactDOM 18 UMD -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Babel Standalone -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Chart.js CDN for Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- KaTeX for Math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <!-- Supabase Cloud Database JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #6B3DF5;
+      --secondary: #F6C445;
+      --accent: #6EE7B7;
+      --bg: #FFFDF5;
+      --text: #1E1B4B;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #FFFDF5;
+      color: #1E1B4B;
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+      background-image:
+        radial-gradient(#6B3DF5 1.2px, transparent 1.2px),
+        radial-gradient(#F6C445 1.2px, #FFFDF5 1.2px);
+      background-size: 32px 32px;
+      background-position: 0 0, 16px 16px;
+    }
+
+    .dark body {
+      background-color: #0F0A24;
+      color: #F3F4F6;
+      background-image:
+        radial-gradient(#8B5CF6 1.2px, transparent 1.2px),
+        radial-gradient(#F6C445 1.2px, #0F0A24 1.2px);
+    }
+
+    h1,
+    h2,
+    h3,
+    .font-pixel {
+      font-family: 'Pixelify Sans', 'Press Start 2P', monospace;
+      letter-spacing: -0.02em;
+    }
+
+    /* 3D Block Pixel styling */
+    .pixel-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 3px solid #1E1B4B;
+      box-shadow: 5px 5px 0px #1E1B4B;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dark .pixel-card {
+      background: rgba(23, 15, 54, 0.96);
+      border: 3px solid #F6C445;
+      box-shadow: 5px 5px 0px #F6C445;
+    }
+
+    .pixel-card-hover:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 8px 8px 0px #1E1B4B;
+    }
+
+    .dark .pixel-card-hover:hover {
+      box-shadow: 8px 8px 0px #F6C445;
+    }
+
+    .pixel-btn {
+      border: 3px solid #1E1B4B;
+      box-shadow: 4px 4px 0px #1E1B4B;
+      font-family: 'Pixelify Sans', monospace;
+      font-weight: 700;
+      transition: all 0.1s ease-in-out;
+    }
+
+    .pixel-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #1E1B4B;
+    }
+
+    .pixel-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #1E1B4B;
+    }
+
+    .pixel-badge {
+      border: 2px solid #1E1B4B;
+      box-shadow: 2px 2px 0px #1E1B4B;
+      font-family: 'Pixelify Sans', monospace;
+    }
+
+    /* Input & Browser Autofill Text Contrast Fixes */
+    input,
+    select,
+    textarea {
+      color: #1E1B4B !important;
+      background-color: #FFFFFF !important;
+      caret-color: #6B3DF5;
+    }
+
+    .dark input,
+    .dark select,
+    .dark textarea {
+      color: #FFFDF5 !important;
+      background-color: #0F0A24 !important;
+      caret-color: #F6C445;
+    }
+
+    /* Portal Input specific contrast styling */
+    .portal-input {
+      color: #F6C445 !important;
+      background-color: #0F0A24 !important;
+      border: 3px solid #6B3DF5 !important;
+      caret-color: #F6C445;
+      font-weight: 700 !important;
+    }
+
+    .portal-input:focus {
+      border-color: #F6C445 !important;
+      box-shadow: 0 0 0 3px rgba(246, 196, 69, 0.3) !important;
+    }
+
+    .portal-input::placeholder {
+      color: #A78BFA !important;
+      font-weight: 400 !important;
+    }
+
+    /* Browser Autofill Overrides for Webkit Chrome / Edge / Safari */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+      -webkit-text-fill-color: #F6C445 !important;
+      -webkit-box-shadow: 0 0 0px 1000px #0F0A24 inset !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    @keyframes floatCloud {
+      0% {
+        transform: translateX(-15%);
+      }
+
+      50% {
+        transform: translateX(105vw);
+      }
+
+      100% {
+        transform: translateX(-15%);
+      }
+    }
+
+    .animate-cloud-slow {
+      animation: floatCloud 45s linear infinite;
+    }
+
+    .animate-cloud-fast {
+      animation: floatCloud 25s linear infinite;
+    }
+
+    @keyframes blinkText {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.2;
+      }
+    }
+
+    .animate-blink {
+      animation: blinkText 1.2s infinite ease-in-out;
+    }
+
+    @keyframes floatIsland {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .animate-float-island {
+      animation: floatIsland 4s infinite ease-in-out;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #FFFDF5;
+      border-left: 2px solid #1E1B4B;
+    }
+
+    .dark ::-webkit-scrollbar-track {
+      background: #0F0A24;
+      border-left: 2px solid #F6C445;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #6B3DF5;
+      border: 2px solid #1E1B4B;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #F6C445;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+        background-image: none !important;
+      }
+
+      header,
+      footer,
+      nav,
+      button,
+      .no-print {
+        display: none !important;
+      }
+
+      .print-only {
+        display: block !important;
+      }
+    }
+
+    .print-only {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen selection:bg-haldiYellow-500 selection:text-royalPurple-900">
+  <div id="root"></div>
+
+  <!-- React Application Logic -->
+  <script type="text/babel">
+    const { useState, useEffect, createContext, useContext, useRef } = React;
+
+    // Pixel Icon Helper Component
+    const Icon = ({ name, className = "w-4 h-4" }) => {
+      const icons = {
+        book: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />,
+        plus: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" />,
+        search: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />,
+        trash: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />,
+        edit: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />,
+        chevronRight: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" />,
+        shield: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />,
+        copy: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />,
+        check: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />,
+        print: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />,
+        sun: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />,
+        moon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />,
+        download: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />,
+        upload: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />,
+        home: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />,
+        table: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />,
+        code: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />,
+        info: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />,
+        duplicate: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />,
+        chart: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />,
+        fullScreen: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 8V4m0 0h4M4 4l5 5m11-2V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />,
+        export: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />,
+        sword: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.9 6.91a2.12 2.12 0 01-3-3l6.91-6.9a6 6 0 017.94-7.94l-3.76 3.76z" />,
+        star: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />,
+        trophy: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 3h14M5 3v6a7 7 0 0014 0V3M5 3H3v4a3 3 0 003 3h.5m11.5-7h2v4a3 3 0 01-3 3h-.5M12 16v5m-4 0h8" />,
+        user: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />,
+        history: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
+        eye: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      };
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          {icons[name] || icons.star}
+        </svg>
+      );
+    };
+
+    // Initial Seed Data
+    const INITIAL_SEED = {
+      subjects: [
+        {
+          id: "sub-daa-401",
+          name: "Design and Analysis of Algorithms (DAA)",
+          code: "CS-401",
+          color: "from-royalPurple-600 to-royalPurple-800",
+          description: "Core algorithmic paradigms, asymptotic analysis, divide and conquer, dynamic programming, greedy algorithms, and graph algorithms.",
+          practicals: []
+        }
+      ]
+    };
+
+    // ⚡ SUPABASE CLOUD DATABASE CONFIGURATION
+    const SUPABASE_URL = "https://yrwxnomlbznfffqzdsby.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlyd3hub21sYnpuZmZmcXpkc2J5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1MTA1MDAsImV4cCI6MjEwMTA4NjUwMH0.Gz234FK_OKlxE5Gp8ykaxMGyxh7ahyy8lsDreH7Wznc";
+
+    // Initialize Supabase client
+    const supabase = (window.supabase && SUPABASE_URL && SUPABASE_URL.startsWith("http"))
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    // Prefetched Admin Credentials specified by user:
+    // Admin 1: barkhathecutiepie@gmail.com / yesiam
+    // Admin 2: admin@sbjit.edu.in / admin@123
+    const PREFETCHED_ADMIN_EMAILS = [
+      'barkhathecutiepie@gmail.com',
+      'admin@sbjit.edu.in',
+      'admin@practicalship.com'
+    ];
+
+    const INITIAL_USERS = [
+      { id: 'usr-admin-1', email: 'barkhathecutiepie@gmail.com', password: 'yesiam', name: 'Barkha (Admin)', role: 'admin' },
+      { id: 'usr-admin-2', email: 'admin@sbjit.edu.in', password: 'admin@123', name: 'SBJIT Admin', role: 'admin' }
+    ];
+
+    // Data Context
+    const DataContext = createContext();
+
+    const DataProvider = ({ children }) => {
+      const [data, setData] = useState(() => {
+        try {
+          const raw = localStorage.getItem("practical_ship_data");
+          if (!raw) return INITIAL_SEED;
+          const parsed = JSON.parse(raw);
+          return (parsed && Array.isArray(parsed.subjects)) ? parsed : INITIAL_SEED;
+        } catch { return INITIAL_SEED; }
+      });
+
+      const [users, setUsers] = useState(() => {
+        try {
+          const raw = localStorage.getItem("practical_ship_users");
+          return raw ? JSON.parse(raw) : INITIAL_USERS;
+        } catch { return INITIAL_USERS; }
+      });
+
+      // Login Wall State: Requires explicit authentication before accessing app
+      const [currentUser, setCurrentUser] = useState(() => {
+        try {
+          const raw = localStorage.getItem("practical_ship_current_user");
+          return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+      });
+
+      const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        try {
+          const raw = localStorage.getItem("practical_ship_auth");
+          return raw === "true" && Boolean(localStorage.getItem("practical_ship_current_user"));
+        } catch { return false; }
+      });
+
+      const [loginHistory, setLoginHistory] = useState(() => {
+        try {
+          const raw = localStorage.getItem("practical_ship_login_history");
+          return raw ? JSON.parse(raw) : [
+            { id: 'log-1', email: 'barkhathecutiepie@gmail.com', name: 'Barkha (Admin)', role: 'admin', timestamp: new Date().toLocaleString() }
+          ];
+        } catch { return []; }
+      });
+
+      const [editHistory, setEditHistory] = useState(() => {
+        try {
+          const raw = localStorage.getItem("practical_ship_edit_history");
+          return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
+      });
+
+      const [theme, setTheme] = useState(() => localStorage.getItem("practical_ship_theme") || "light");
+      const [currentRoute, setCurrentRoute] = useState({ page: 'home', subjectId: null, practicalId: null });
+      const [globalSearch, setGlobalSearch] = useState('');
+      const [toast, setToast] = useState(null);
+      const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+
+      const isAdmin = currentUser?.role === 'admin';
+
+      const showToast = (message, type = 'success') => {
+        setToast({ message, type, id: Date.now() });
+        setTimeout(() => setToast(null), 3200);
+      };
+
+      useEffect(() => {
+        localStorage.setItem("practical_ship_data", JSON.stringify(data));
+      }, [data]);
+
+      useEffect(() => {
+        localStorage.setItem("practical_ship_users", JSON.stringify(users));
+      }, [users]);
+
+      useEffect(() => {
+        if (currentUser) {
+          localStorage.setItem("practical_ship_current_user", JSON.stringify(currentUser));
+        } else {
+          localStorage.removeItem("practical_ship_current_user");
+        }
+      }, [currentUser]);
+
+      useEffect(() => {
+        localStorage.setItem("practical_ship_auth", isAuthenticated ? "true" : "false");
+      }, [isAuthenticated]);
+
+      useEffect(() => {
+        localStorage.setItem("practical_ship_login_history", JSON.stringify(loginHistory));
+      }, [loginHistory]);
+
+      useEffect(() => {
+        localStorage.setItem("practical_ship_edit_history", JSON.stringify(editHistory));
+      }, [editHistory]);
+
+      useEffect(() => {
+        localStorage.setItem("practical_memo_theme", theme);
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }, [theme]);
+
+      // Cloud Database Initial Load
+      useEffect(() => {
+        if (!supabase) return;
+        async function fetchCloudData() {
+          try {
+            const { data: cloudSubjects, error } = await supabase.from('subjects').select('*');
+            const { data: cloudPracticals } = await supabase.from('practicals').select('*');
+            if (cloudSubjects && cloudSubjects.length > 0) {
+              const formattedSubjects = cloudSubjects.map(s => ({
+                ...s,
+                practicals: (cloudPracticals || []).filter(p => p.subject_id === s.id).map(p => ({
+                  id: p.id,
+                  practicalNo: p.practical_no,
+                  title: p.title,
+                  shortDescription: p.short_description,
+                  status: p.status || 'Draft',
+                  updatedAt: p.updated_at,
+                  sections: p.sections || {}
+                }))
+              }));
+              setData({ subjects: formattedSubjects });
+            }
+          } catch (err) { console.error("Cloud fetch error:", err); }
+        }
+        fetchCloudData();
+      }, []);
+
+      const logEdit = (action, title, subject) => {
+        const entry = {
+          id: `edit-${Date.now()}`,
+          userEmail: currentUser?.email || 'Viewer',
+          userName: currentUser?.name || 'Viewer',
+          action,
+          title: title || 'N/A',
+          subject: subject || 'N/A',
+          timestamp: new Date().toLocaleString()
+        };
+        setEditHistory(prev => [entry, ...prev]);
+        if (supabase) {
+          supabase.from('edit_history').insert([{
+            id: entry.id,
+            user_email: entry.userEmail,
+            user_name: entry.userName,
+            action: entry.action,
+            title: entry.title,
+            subject: entry.subject
+          }]).then();
+        }
+      };
+
+      const recordLogin = (usr) => {
+        const entry = {
+          id: `log-${Date.now()}`,
+          email: usr.email,
+          name: usr.name,
+          role: usr.role,
+          timestamp: new Date().toLocaleString()
+        };
+        setLoginHistory(prev => [entry, ...prev]);
+        if (supabase) {
+          supabase.from('login_history').insert([{
+            id: entry.id,
+            email: entry.email,
+            name: entry.name,
+            role: entry.role
+          }]).then();
+        }
+      };
+
+      // Login Flow: Admin requires barkhathecutiepie@gmail.com / yesiam. Viewers use ANY email dynamically!
+      const handleLogin = (email, password) => {
+        const cleanEmail = email.trim().toLowerCase();
+        const isAdminEmail = PREFETCHED_ADMIN_EMAILS.includes(cleanEmail);
+
+        let userObj = null;
+
+        if (isAdminEmail) {
+          const adminUser = users.find(u => u.email.toLowerCase() === cleanEmail);
+          if (adminUser && adminUser.password === password) {
+            userObj = adminUser;
+          } else if (cleanEmail === 'barkhathecutiepie@gmail.com' && (password === 'yesiam' || !password)) {
+            userObj = { id: 'usr-admin-1', email: cleanEmail, name: 'Barkha (Admin)', role: 'admin', password: 'yesiam' };
+          } else if (cleanEmail === 'admin@sbjit.edu.in' && password === 'admin@123') {
+            userObj = { id: 'usr-admin-2', email: cleanEmail, name: 'SBJIT Admin', role: 'admin', password: 'admin@123' };
+          } else {
+            showToast("Invalid password for Commander Admin!", "error");
+            return false;
+          }
+        } else {
+          // Dynamic viewer login with ANY typed email
+          let viewerUser = users.find(u => u.email.toLowerCase() === cleanEmail);
+          if (!viewerUser) {
+            const rawName = cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ').toUpperCase();
+            viewerUser = {
+              id: `usr-${Date.now()}`,
+              email: cleanEmail,
+              name: rawName || 'Pixel Adventurer',
+              role: 'viewer',
+              password: password || '123456'
+            };
+            setUsers(prev => [...prev, viewerUser]);
+          }
+          userObj = viewerUser;
+        }
+
+        setCurrentUser(userObj);
+        setIsAuthenticated(true);
+        recordLogin(userObj);
+        showToast(userObj.role === 'admin' ? `⭐ Welcome Commander ${userObj.name}! (ADMIN MODE ACTIVE)` : `⚔️ Logged in as Adventurer (${userObj.name})!`);
+        return true;
+      };
+
+      const handleQuickGuestLogin = () => {
+        const guestObj = { id: `guest-${Date.now()}`, email: 'adventurer@pixel.edu', name: 'Pixel Adventurer', role: 'viewer' };
+        setCurrentUser(guestObj);
+        setIsAuthenticated(true);
+        recordLogin(guestObj);
+        showToast("⚔️ Entered PracticalShip Universe as Adventurer!");
+      };
+
+      const handleLogout = () => {
+        setCurrentUser(null);
+        setIsAuthenticated(false);
+        showToast("Logged out to Portal Screen.");
+      };
+
+      const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+
+      const addSubject = (subObj) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can create subjects", "error");
+        const newSub = {
+          id: `sub-${Date.now()}`,
+          name: subObj.name,
+          code: subObj.code || `CS-${Math.floor(100 + Math.random() * 900)}`,
+          description: subObj.description || "",
+          color: subObj.color || "from-royalPurple-600 to-royalPurple-800",
+          practicals: []
+        };
+        setData(prev => ({ ...prev, subjects: [...prev.subjects, newSub] }));
+        logEdit("Created Subject Realm", newSub.name, newSub.name);
+        showToast("🎮 Subject Realm Unlocked!");
+      };
+
+      const updateSubject = (id, fields) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can edit subjects", "error");
+        const sub = data.subjects.find(s => s.id === id);
+        setData(prev => ({
+          ...prev,
+          subjects: prev.subjects.map(s => s.id === id ? { ...s, ...fields } : s)
+        }));
+        logEdit("Updated Subject", fields.name || sub?.name, fields.name || sub?.name);
+        showToast("✨ Subject Realm Updated!");
+      };
+
+      const deleteSubject = (id) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can delete subjects", "error");
+        const sub = data.subjects.find(s => s.id === id);
+        setData(prev => ({
+          ...prev,
+          subjects: prev.subjects.filter(s => s.id !== id)
+        }));
+        logEdit("Deleted Subject", sub?.name, sub?.name);
+        showToast("💥 Subject Realm Destroyed!", "error");
+        if (currentRoute.subjectId === id) {
+          setCurrentRoute({ page: 'home', subjectId: null, practicalId: null });
+        }
+      };
+
+      const addPractical = (subjectId, pracObj) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can add practicals", "error");
+        const subject = data.subjects.find(s => s.id === subjectId);
+        const newPrac = {
+          id: `prac-${Date.now()}`,
+          practicalNo: Number(pracObj.practicalNo) || 1,
+          title: pracObj.title || "Untitled Quest",
+          shortDescription: pracObj.shortDescription || "",
+          status: pracObj.status || "Draft",
+          updatedAt: new Date().toISOString().slice(0, 10),
+          sections: {
+            aim: pracObj.title || "",
+            objective: "",
+            theory: "",
+            algorithm: "",
+            flowchart: "",
+            codeSections: [],
+            output: "",
+            observation: "",
+            result: "",
+            conclusion: "",
+            vivaQuestions: [],
+            references: "",
+            discussion: "",
+            comparisonTable: {
+              title: "Algorithm Power & Complexity Matrix",
+              headers: ["Algorithm / Paradigm", "Best Case", "Worst Case", "Space Complexity"],
+              rows: [
+                ["Merge Sort", "O(N log N)", "O(N log N)", "O(N)"],
+                ["Quick Sort", "O(N log N)", "O(N²)", "O(log N)"]
+              ]
+            },
+            graphData: {
+              title: "Execution Benchmark Chart (N elements)",
+              type: "bar",
+              labels: ["1000", "5000", "10000", "50000"],
+              datasets: [
+                { label: "Merge Sort (ms)", data: [2, 12, 28, 140] },
+                { label: "Quick Sort (ms)", data: [1, 8, 19, 95] }
+              ]
+            }
+          }
+        };
+        setData(prev => ({
+          ...prev,
+          subjects: prev.subjects.map(s => s.id === subjectId ? { ...s, practicals: [...s.practicals, newPrac] } : s)
+        }));
+        logEdit("Added Quest Practical", newPrac.title, subject?.name);
+        showToast("📜 Quest Practical Crafting Complete!");
+      };
+
+      const updatePractical = (subjectId, practicalId, fields) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can edit practicals", "error");
+        const subject = data.subjects.find(s => s.id === subjectId);
+        const sourcePrac = subject?.practicals?.find(p => p.id === practicalId);
+
+        setData(prev => ({
+          ...prev,
+          subjects: prev.subjects.map(s => {
+            if (s.id === subjectId) {
+              return {
+                ...s,
+                practicals: s.practicals.map(p => p.id === practicalId ? { ...p, ...fields, updatedAt: new Date().toISOString().slice(0, 10) } : p)
+              };
+            }
+            return s;
+          })
+        }));
+        logEdit("Updated Practical", fields.title || sourcePrac?.title, subject?.name);
+        showToast("💾 Saved to Pixel Spellbook!");
+      };
+
+      const duplicatePractical = (subjectId, practicalId) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can duplicate practicals", "error");
+        const subject = data.subjects.find(s => s.id === subjectId);
+        const sourcePrac = subject?.practicals?.find(p => p.id === practicalId);
+        if (!sourcePrac) return;
+
+        const cloned = {
+          ...JSON.parse(JSON.stringify(sourcePrac)),
+          id: `prac-${Date.now()}`,
+          practicalNo: (subject.practicals.length || 0) + 1,
+          title: `${sourcePrac.title} (Copy)`,
+          updatedAt: new Date().toISOString().slice(0, 10)
+        };
+
+        setData(prev => ({
+          ...prev,
+          subjects: prev.subjects.map(s => s.id === subjectId ? { ...s, practicals: [...s.practicals, cloned] } : s)
+        }));
+        logEdit("Duplicated Practical", cloned.title, subject?.name);
+        showToast("✨ Practical Item Cloned!");
+      };
+
+      const deletePractical = (subjectId, practicalId) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can delete practicals", "error");
+        const subject = data.subjects.find(s => s.id === subjectId);
+        const sourcePrac = subject?.practicals?.find(p => p.id === practicalId);
+
+        setData(prev => ({
+          ...prev,
+          subjects: prev.subjects.map(s => s.id === subjectId ? { ...s, practicals: s.practicals.filter(p => p.id !== practicalId) } : s)
+        }));
+        logEdit("Deleted Practical", sourcePrac?.title, subject?.name);
+        showToast("💥 Practical Item Vaporized!", "error");
+        if (currentRoute.practicalId === practicalId) {
+          setCurrentRoute({ page: 'subject', subjectId, practicalId: null });
+        }
+      };
+
+      const exportBackup = () => {
+        const str = JSON.stringify(data, null, 2);
+        const blob = new Blob([str], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `practical-ship-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("📦 Pixel Backup Export Complete!");
+      };
+
+      const importBackup = (jsonObj) => {
+        if (!isAdmin) return showToast("Permission Denied: Only Admin can import data", "error");
+        if (jsonObj && Array.isArray(jsonObj.subjects)) {
+          setData(jsonObj);
+          logEdit("Imported Backup JSON", "Entire Database Restore", "All Realms");
+          showToast("⚡ World Database Restored!");
+        } else {
+          alert("Invalid backup JSON structure.");
+        }
+      };
+
+      return (
+        <DataContext.Provider value={{
+          data, users, currentUser, isAuthenticated, isAdmin, theme, toggleTheme, toast, showToast,
+          currentRoute, setCurrentRoute, globalSearch, setGlobalSearch,
+          loginHistory, editHistory,
+          isHistoryModalOpen, setIsHistoryModalOpen,
+          handleLogin, handleQuickGuestLogin, handleLogout,
+          addSubject, updateSubject, deleteSubject,
+          addPractical, updatePractical, duplicatePractical, deletePractical,
+          exportBackup, importBackup
+        }}>
+          {children}
+        </DataContext.Provider>
+      );
+    };
+
+    // Toast Banner Component
+    const ToastBanner = () => {
+      const { toast } = useContext(DataContext);
+      if (!toast) return null;
+
+      return (
+        <div className="fixed bottom-6 right-6 z-50 animate-bounce">
+          <div className={`px-5 py-3 rounded-2xl pixel-card flex items-center gap-3 font-pixel text-xs font-bold ${toast.type === 'error'
+              ? 'bg-rose-900 text-rose-100 border-rose-500'
+              : 'bg-haldiYellow-500 text-royalPurple-900 border-royalPurple-900'
+            }`}>
+            <Icon name={toast.type === 'error' ? 'trash' : 'star'} className="w-5 h-5 text-royalPurple-900 dark:text-haldiYellow-500" />
+            <span>{toast.message}</span>
+          </div>
+        </div>
+      );
+    };
+
+    // Full-Screen World-Class Pixel Login Portal / Gate
+    const LoginPortalScreen = () => {
+      const { handleLogin, handleQuickGuestLogin } = useContext(DataContext);
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+
+      const onFormSubmit = (e) => {
+        e.preventDefault();
+        if (!email.trim()) return;
+        handleLogin(email, password);
+      };
+
+      return (
+        <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4 bg-gradient-to-b from-royalPurple-950 via-royalPurple-900 to-royalPurple-950 text-pixelCream selection:bg-haldiYellow-500 selection:text-royalPurple-950">
+
+          {/* Animated Background Pixel Clouds & Floating Elements */}
+          <div className="absolute top-10 left-0 right-0 pointer-events-none opacity-30 select-none">
+            <div className="animate-cloud-slow text-4xl">☁️ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ☁️ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ☁️</div>
+            <div className="animate-cloud-fast text-2xl mt-12">⭐ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ☁️ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⭐ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ☁️</div>
+          </div>
+
+          <div className="relative z-10 w-full max-w-md space-y-6">
+
+            {/* World-Class Pixel Header Banner */}
+            <div className="text-center space-y-3">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-haldiYellow-500 text-royalPurple-950 text-xs font-pixel font-bold pixel-badge shadow-lg animate-float-island">
+                <Icon name="sword" className="w-4 h-4 text-royalPurple-950" />
+                <span>PRESS START TO ENTER UNIVERSE</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-6xl font-extrabold font-pixel text-haldiYellow-400 tracking-tight drop-shadow-[5px_5px_0px_#1E1B4B]">
+                PracticalShip
+              </h1>
+              <p className="text-sm font-pixel text-royalPurple-200 animate-blink">
+                ▶ Academic Lab & Practical Universe ◀
+              </p>
+            </div>
+
+            {/* Login Card */}
+            <div className="pixel-card rounded-3xl p-6 sm:p-8 border-4 border-royalPurple-900 bg-royalPurple-900/90 text-pixelCream space-y-6 shadow-2xl backdrop-blur-md">
+
+              <div className="flex items-center justify-between border-b-2 border-royalPurple-800 pb-4">
+                <div className="flex items-center gap-2 font-pixel">
+                  <span className="text-lg">🎮</span>
+                  <h2 className="text-lg font-bold text-haldiYellow-400">Account Login Portal</h2>
+                </div>
+                <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-royalPurple-950 text-pixelMint border border-royalPurple-700 font-bold">
+                  SECURE v2.5
+                </span>
+              </div>
+
+              {/* Login Form */}
+              <form onSubmit={onFormSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-pixel font-bold text-haldiYellow-400 mb-1">Email Address *</label>
+                  <input
+                    type="email" required
+                    placeholder="name@example.com"
+                    value={email} onChange={(e) => setEmail(e.target.value)}
+                    className="w-full portal-input rounded-xl px-4 py-3 text-xs font-mono placeholder-purple-300 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-pixel font-bold text-haldiYellow-400 mb-1">Password *</label>
+                  <input
+                    type="password" required
+                    placeholder="••••••••"
+                    value={password} onChange={(e) => setPassword(e.target.value)}
+                    className="w-full portal-input rounded-xl px-4 py-3 text-xs font-mono placeholder-purple-300 focus:outline-none"
+                  />
+                </div>
+
+                <div className="pt-2 space-y-3">
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 rounded-2xl pixel-btn bg-haldiYellow-500 text-royalPurple-950 font-pixel font-extrabold text-sm hover:bg-haldiYellow-400 shadow-xl flex items-center justify-center gap-2"
+                  >
+                    <span>ENTER UNIVERSE</span>
+                    <Icon name="chevronRight" className="w-5 h-5 stroke-[3]" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleQuickGuestLogin}
+                    className="w-full py-2.5 rounded-xl pixel-btn bg-royalPurple-800 text-pixelMint hover:bg-royalPurple-700 text-xs font-pixel font-bold flex items-center justify-center gap-1.5"
+                  >
+                    <span>⚔️ Continue as Guest Adventurer</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <footer className="text-center font-pixel text-[11px] text-royalPurple-300">
+              PracticalShip — World-Class Pixel-Art Academic Platform 🎮
+            </footer>
+          </div>
+        </div>
+      );
+    };
+
+    // History & Audit Logs Modal (Admin Only)
+    const HistoryModal = () => {
+      const { isHistoryModalOpen, setIsHistoryModalOpen, loginHistory, editHistory, isAdmin } = useContext(DataContext);
+      const [activeTab, setActiveTab] = useState('login');
+
+      if (!isHistoryModalOpen || !isAdmin) return null;
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royalPurple-950/70 backdrop-blur-md">
+          <div className="relative w-full max-w-2xl pixel-card rounded-3xl p-6 sm:p-8 space-y-6 max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between border-b-2 border-royalPurple-900 pb-4">
+              <div className="flex items-center gap-2">
+                <Icon name="history" className="w-5 h-5 text-haldiYellow-500" />
+                <h2 className="text-xl font-bold font-pixel text-royalPurple-900 dark:text-haldiYellow-400">Command Center Audit Logs</h2>
+              </div>
+              <button onClick={() => setIsHistoryModalOpen(false)} className="text-slate-400 hover:text-slate-600 font-pixel font-bold">✕</button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex items-center gap-2 font-pixel">
+              <button onClick={() => setActiveTab('login')} className={`px-4 py-2 rounded-xl text-xs font-bold pixel-btn ${activeTab === 'login' ? 'bg-haldiYellow-500 text-royalPurple-950' : 'bg-pixelCream text-slate-700'}`}>
+                Login Logs ({loginHistory.length})
+              </button>
+              <button onClick={() => setActiveTab('edits')} className={`px-4 py-2 rounded-xl text-xs font-bold pixel-btn ${activeTab === 'edits' ? 'bg-haldiYellow-500 text-royalPurple-950' : 'bg-pixelCream text-slate-700'}`}>
+                Edit Logs ({editHistory.length})
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-2 space-y-3 font-mono">
+              {activeTab === 'login' ? (
+                loginHistory.length === 0 ? <p className="text-xs text-slate-500">No login history recorded.</p> : (
+                  loginHistory.map(log => (
+                    <div key={log.id} className="p-3.5 rounded-xl bg-royalPurple-50 dark:bg-royalPurple-900/50 border-2 border-royalPurple-800 flex items-center justify-between text-xs">
+                      <div>
+                        <p className="font-extrabold text-royalPurple-900 dark:text-haldiYellow-400">{log.name} <span className="font-normal text-purple-400">({log.email})</span></p>
+                        <span className={`text-[10px] font-pixel font-bold ${log.role === 'admin' ? 'text-haldiYellow-500' : 'text-pixelMint'}`}>ROLE: {log.role.toUpperCase()}</span>
+                      </div>
+                      <span className="text-[10px] text-slate-400">{log.timestamp}</span>
+                    </div>
+                  ))
+                )
+              ) : (
+                editHistory.length === 0 ? <p className="text-xs text-slate-500">No practical edits recorded yet.</p> : (
+                  editHistory.map(edit => (
+                    <div key={edit.id} className="p-3.5 rounded-xl bg-royalPurple-50 dark:bg-royalPurple-900/50 border-2 border-royalPurple-800 space-y-1 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 text-[10px] font-pixel font-extrabold bg-haldiYellow-500 text-royalPurple-950 rounded">
+                          {edit.action}
+                        </span>
+                        <span className="text-[10px] text-slate-400">{edit.timestamp}</span>
+                      </div>
+                      <p className="font-bold text-slate-800 dark:text-slate-200">{edit.title} <span className="text-slate-400 font-normal">[{edit.subject}]</span></p>
+                      <p className="text-[10px] text-slate-500">Author: {edit.userName} ({edit.userEmail})</p>
+                    </div>
+                  ))
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Navbar Component
+    const Navbar = () => {
+      const { isAdmin, currentUser, theme, toggleTheme, setCurrentRoute, globalSearch, setGlobalSearch, exportBackup, importBackup, setIsHistoryModalOpen, handleLogout } = useContext(DataContext);
+
+      const handleImportFile = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const json = JSON.parse(evt.target.result);
+            importBackup(json);
+          } catch { alert("Failed to parse JSON file."); }
+        };
+        reader.readAsText(file);
+      };
+
+      return (
+        <header className="sticky top-0 z-40 bg-royalPurple-600 border-b-4 border-royalPurple-900 shadow-xl text-pixelCream">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            {/* Brand Logo */}
+            <div
+              onClick={() => setCurrentRoute({ page: 'home', subjectId: null, practicalId: null })}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-haldiYellow-500 p-1 border-2 border-royalPurple-950 shadow-md group-hover:rotate-6 transition-transform flex items-center justify-center text-royalPurple-950">
+                <Icon name="sword" className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-pixel font-extrabold text-xl tracking-tight text-haldiYellow-400">
+                    PracticalShip
+                  </span>
+                  <span className={`px-2 py-0.5 text-[10px] font-pixel font-extrabold rounded-md pixel-badge ${isAdmin ? 'bg-haldiYellow-500 text-royalPurple-950' : 'bg-pixelMint text-royalPurple-950'}`}>
+                    {isAdmin ? 'COMMANDER' : 'ADVENTURER'}
+                  </span>
+                </div>
+                <p className="text-[10px] font-pixel text-royalPurple-200 hidden sm:block">Pixel Academic Universe</p>
+              </div>
+            </div>
+
+            {/* Global Search Bar */}
+            <div className="hidden md:flex items-center flex-1 max-w-md mx-4 relative">
+              <Icon name="search" className="w-4 h-4 text-royalPurple-200 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search practicals, algorithms, codes..."
+                value={globalSearch}
+                onChange={(e) => setGlobalSearch(e.target.value)}
+                className="w-full bg-royalPurple-900/90 border-2 border-royalPurple-800 rounded-xl pl-10 pr-4 py-2 text-xs font-mono text-pixelCream placeholder-purple-300 focus:outline-none focus:border-haldiYellow-400"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {isAdmin && (
+                <button
+                  onClick={() => setIsHistoryModalOpen(true)}
+                  className="px-3 py-2 rounded-xl bg-royalPurple-800 border-2 border-royalPurple-900 text-pixelCream hover:text-haldiYellow-400 flex items-center gap-1.5 text-xs font-pixel font-bold pixel-btn"
+                  title="View Command Logs (Admin Only)"
+                >
+                  <Icon name="history" className="w-4 h-4" />
+                  <span className="hidden lg:inline">Logs</span>
+                </button>
+              )}
+
+              <button
+                onClick={handleLogout}
+                className="px-3.5 py-2 rounded-xl bg-haldiYellow-500 text-royalPurple-950 text-xs font-pixel font-bold hover:bg-haldiYellow-400 flex items-center gap-1.5 pixel-btn"
+                title="Switch Character / Exit Portal"
+              >
+                <Icon name="user" className="w-4 h-4" />
+                <span className="max-w-[100px] truncate">{currentUser ? currentUser.name : 'Log Out'}</span>
+              </button>
+
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl bg-royalPurple-800 border-2 border-royalPurple-900 text-pixelCream hover:text-haldiYellow-400 pixel-btn"
+                title="Toggle Theme"
+              >
+                <Icon name={theme === 'dark' ? 'sun' : 'moon'} className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={exportBackup}
+                className="p-2 rounded-xl bg-royalPurple-800 border-2 border-royalPurple-900 text-pixelCream hover:text-haldiYellow-400 flex items-center gap-1 text-xs font-pixel font-bold pixel-btn"
+                title="Export Backup JSON"
+              >
+                <Icon name="download" className="w-4 h-4" />
+                <span className="hidden lg:inline">Export</span>
+              </button>
+
+              {isAdmin && (
+                <label className="p-2 rounded-xl bg-royalPurple-800 border-2 border-royalPurple-900 text-pixelCream hover:text-haldiYellow-400 flex items-center gap-1 text-xs font-pixel font-bold pixel-btn cursor-pointer">
+                  <Icon name="upload" className="w-4 h-4" />
+                  <span className="hidden lg:inline">Import</span>
+                  <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
+                </label>
+              )}
+            </div>
+          </div>
+        </header>
+      );
+    };
+
+    // Subject Modal Component
+    const SubjectModal = ({ isOpen, onClose, onSave, subjectToEdit = null }) => {
+      const [name, setName] = useState('');
+      const [code, setCode] = useState('');
+      const [description, setDescription] = useState('');
+
+      useEffect(() => {
+        if (subjectToEdit) {
+          setName(subjectToEdit.name || '');
+          setCode(subjectToEdit.code || '');
+          setDescription(subjectToEdit.description || '');
+        } else {
+          setName(''); setCode(''); setDescription('');
+        }
+      }, [subjectToEdit, isOpen]);
+
+      if (!isOpen) return null;
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!name.trim()) return;
+        onSave({ name: name.trim(), code: code.trim() || 'CS-401', description: description.trim() });
+        onClose();
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royalPurple-950/70 backdrop-blur-md">
+          <div className="relative w-full max-w-lg pixel-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <h2 className="text-xl font-bold font-pixel text-royalPurple-900 dark:text-haldiYellow-400">
+              {subjectToEdit ? 'Edit Subject Realm' : 'Unlock New Subject Realm'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Subject Realm Name *</label>
+                <input
+                  type="text" required
+                  placeholder="e.g. Design and Analysis of Algorithms (DAA)"
+                  value={name} onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Subject Code</label>
+                <input
+                  type="text"
+                  placeholder="e.g. CS-401"
+                  value={code} onChange={(e) => setCode(e.target.value)}
+                  className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Description / Realm Overview</label>
+                <textarea
+                  rows="3"
+                  placeholder="Realm overview notes..."
+                  value={description} onChange={(e) => setDescription(e.target.value)}
+                  className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-3">
+                <button type="button" onClick={onClose} className="px-4 py-2 text-xs font-pixel text-slate-500">Cancel</button>
+                <button type="submit" className="px-5 py-2 rounded-xl text-xs font-pixel font-bold pixel-btn bg-haldiYellow-500 text-royalPurple-950 hover:bg-haldiYellow-400">Save Realm</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    };
+
+    // Practical Modal Component
+    const PracticalModal = ({ isOpen, onClose, onSave, practicalToEdit = null, nextNo = 1 }) => {
+      const [no, setNo] = useState(nextNo);
+      const [title, setTitle] = useState('');
+      const [shortDesc, setShortDesc] = useState('');
+      const [status, setStatus] = useState('Draft');
+
+      useEffect(() => {
+        if (practicalToEdit) {
+          setNo(practicalToEdit.practicalNo || 1);
+          setTitle(practicalToEdit.title || '');
+          setShortDesc(practicalToEdit.shortDescription || '');
+          setStatus(practicalToEdit.status || 'Draft');
+        } else {
+          setNo(nextNo); setTitle(''); setShortDesc(''); setStatus('Draft');
+        }
+      }, [practicalToEdit, isOpen, nextNo]);
+
+      if (!isOpen) return null;
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!title.trim()) return;
+        onSave({ practicalNo: Number(no) || 1, title: title.trim(), shortDescription: shortDesc.trim(), status });
+        onClose();
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royalPurple-950/70 backdrop-blur-md">
+          <div className="relative w-full max-w-lg pixel-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <h2 className="text-xl font-bold font-pixel text-royalPurple-900 dark:text-haldiYellow-400">
+              {practicalToEdit ? 'Edit Quest Practical Metadata' : 'Craft New Quest Practical'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Quest No. *</label>
+                  <input
+                    type="number" min="1" required
+                    value={no} onChange={(e) => setNo(e.target.value)}
+                    className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm font-mono focus:outline-none"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Quest Status</label>
+                  <select
+                    value={status} onChange={(e) => setStatus(e.target.value)}
+                    className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm font-pixel focus:outline-none"
+                  >
+                    <option value="Draft">Draft</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed (Cleared)</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Quest Aim / Title *</label>
+                <input
+                  type="text" required
+                  placeholder="e.g. Implementation of Quick Sort Algorithm"
+                  value={title} onChange={(e) => setTitle(e.target.value)}
+                  className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-pixel font-bold text-royalPurple-900 dark:text-purple-200 mb-1">Short Description</label>
+                <textarea
+                  rows="3"
+                  placeholder="Brief summary..."
+                  value={shortDesc} onChange={(e) => setShortDesc(e.target.value)}
+                  className="w-full bg-pixelCream dark:bg-royalPurple-900 text-royalPurple-950 dark:text-haldiYellow-300 font-extrabold border-2 border-royalPurple-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-3">
+                <button type="button" onClick={onClose} className="px-4 py-2 text-xs font-pixel text-slate-500">Cancel</button>
+                <button type="submit" className="px-5 py-2 rounded-xl text-xs font-pixel font-bold pixel-btn bg-haldiYellow-500 text-royalPurple-950 hover:bg-haldiYellow-400">Save Quest</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    };
+
+    // Interactive Graph / Chart Canvas Component
+    const InteractiveChart = ({ graphData }) => {
+      const canvasRef = useRef(null);
+      const chartInstanceRef = useRef(null);
+
+      useEffect(() => {
+        if (!canvasRef.current || !graphData || !window.Chart) return;
+
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
+        }
+
+        const ctx = canvasRef.current.getContext('2d');
+        const colors = [
+          '#6B3DF5', '#F6C445', '#6EE7B7', '#7DD3FC', '#F472B6', '#D8B4FE'
+        ];
+
+        const datasets = (graphData.datasets || []).map((ds, idx) => ({
+          label: ds.label || `Dataset ${idx + 1}`,
+          data: ds.data || [],
+          backgroundColor: graphData.type === 'pie' || graphData.type === 'doughnut' ? colors : colors[idx % colors.length] + 'BB',
+          borderColor: '#1E1B4B',
+          borderWidth: 3,
+          fill: graphData.type === 'line' ? false : true
+        }));
+
+        chartInstanceRef.current = new window.Chart(ctx, {
+          type: graphData.type || 'bar',
+          data: {
+            labels: graphData.labels || ['Sample 1', 'Sample 2'],
+            datasets
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: { display: true, text: graphData.title || 'Practical Benchmark Chart', font: { size: 14, weight: 'bold', family: 'Pixelify Sans' } },
+              legend: { position: 'bottom', labels: { font: { family: 'Pixelify Sans' } } }
+            }
+          }
+        });
+
+        return () => {
+          if (chartInstanceRef.current) chartInstanceRef.current.destroy();
+        };
+      }, [graphData]);
+
+      const downloadPNG = () => {
+        if (!canvasRef.current) return;
+        const image = canvasRef.current.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = image;
+        a.download = `pixel-chart-${Date.now()}.png`;
+        a.click();
+      };
+
+      return (
+        <div className="space-y-4">
+          <div className="h-64 sm:h-80 w-full relative bg-pixelCream dark:bg-royalPurple-900/50 p-4 rounded-2xl border-2 border-royalPurple-900">
+            <canvas ref={canvasRef} />
+          </div>
+          <div className="flex items-center justify-end gap-2 text-xs font-pixel font-bold">
+            <button
+              onClick={downloadPNG}
+              className="px-3.5 py-2 rounded-xl pixel-btn bg-royalPurple-600 text-pixelCream hover:bg-royalPurple-700 flex items-center gap-1.5"
+            >
+              <Icon name="download" className="w-3.5 h-3.5" /> Download Chart PNG
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="px-3.5 py-2 rounded-xl pixel-btn bg-haldiYellow-500 text-royalPurple-950 hover:bg-haldiYellow-400 flex items-center gap-1.5"
+            >
+              <Icon name="print" className="w-3.5 h-3.5" /> Export Chart PDF
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    // Home View Component
+    const HomeView = () => {
+      const { data, isAdmin, currentUser, addSubject, updateSubject, deleteSubject, setCurrentRoute, globalSearch } = useContext(DataContext);
+      const [isModalOpen, setIsModalOpen] = useState(false);
+      const [editingSub, setEditingSub] = useState(null);
+
+      const filteredSubjects = data.subjects.filter(s => {
+        const q = globalSearch.toLowerCase().trim();
+        if (!q) return true;
+        return s.name.toLowerCase().includes(q) || (s.code && s.code.toLowerCase().includes(q));
+      });
+
+      const totalPracs = data.subjects.reduce((acc, s) => acc + (s.practicals ? s.practicals.length : 0), 0);
+      const totalCompleted = data.subjects.reduce((acc, s) => acc + (s.practicals ? s.practicals.filter(p => p.status === 'Completed').length : 0), 0);
+      const completionRate = totalPracs > 0 ? Math.round((totalCompleted / totalPracs) * 100) : 0;
+
+      // Recent Practicals
+      const allPracticalsWithSub = [];
+      data.subjects.forEach(s => {
+        (s.practicals || []).forEach(p => {
+          allPracticalsWithSub.push({ ...p, subjectName: s.name, subjectId: s.id });
+        });
+      });
+      const recentPracticals = allPracticalsWithSub.slice(-4).reverse();
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+          {/* Viewer Banner if not Admin */}
+          {!isAdmin && (
+            <div className="p-4 rounded-2xl pixel-card bg-haldiYellow-100 border-2 border-royalPurple-900 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-haldiYellow-500 text-royalPurple-950 font-pixel">
+                  <Icon name="eye" className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-pixel font-bold text-royalPurple-900 uppercase tracking-wider">Adventurer Viewer Mode</h4>
+                  <p className="text-xs text-royalPurple-950 font-semibold">Logged in as {currentUser?.name} ({currentUser?.email}). You can view, print, and export.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Hero Banner with Pixel Floating Cloud Parallax */}
+          <div className="pixel-card rounded-3xl p-6 sm:p-8 border-4 border-royalPurple-900 bg-gradient-to-r from-royalPurple-700 via-royalPurple-800 to-royalPurple-700 text-pixelCream relative overflow-hidden shadow-2xl">
+
+            {/* Animated Background Pixel Clouds */}
+            <div className="absolute top-4 left-0 right-0 pointer-events-none opacity-20">
+              <div className="animate-cloud-slow text-4xl">☁️ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ☁️ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ☁️</div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-3 max-w-2xl">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-haldiYellow-500 text-royalPurple-950 text-xs font-pixel font-bold pixel-badge">
+                  <Icon name="star" className="w-4 h-4 text-royalPurple-950" />
+                  Pixel-Art Academic Universe
+                </span>
+                <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-pixel text-haldiYellow-400 drop-shadow-md">
+                  PracticalShip Universe
+                </h1>
+                <p className="text-royalPurple-100 text-sm sm:text-base leading-relaxed">
+                  Document aims, theory, algorithm steps, flowcharts, code snippets, comparison matrix tables, interactive charts, and viva voice questions.
+                </p>
+              </div>
+              {isAdmin && (
+                <button
+                  onClick={() => { setEditingSub(null); setIsModalOpen(true); }}
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl pixel-btn bg-haldiYellow-500 text-royalPurple-950 font-pixel font-bold text-sm hover:bg-haldiYellow-400 shadow-xl"
+                >
+                  <Icon name="plus" className="w-5 h-5 stroke-[3]" />
+                  Unlock Subject Realm
+                </button>
+              )}
+            </div>
+
+            {/* Level & XP Progress Meter */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t-2 border-royalPurple-600/80 font-pixel relative z-10">
+              <div>
+                <p className="text-3xl font-extrabold text-haldiYellow-400">{data.subjects.length}</p>
+                <p className="text-xs text-royalPurple-200 font-semibold">Active Realms</p>
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-pixelCream">{totalPracs}</p>
+                <p className="text-xs text-royalPurple-200 font-semibold">Total Quests</p>
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-pixelMint">{totalCompleted}</p>
+                <p className="text-xs text-royalPurple-200 font-semibold">Quests Cleared</p>
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-haldiYellow-400">{completionRate}% XP</p>
+                <p className="text-xs text-royalPurple-200 font-semibold">Completion Progress</p>
+                <div className="w-full bg-royalPurple-950 rounded-lg h-3 mt-1.5 overflow-hidden border-2 border-royalPurple-900 p-0.5">
+                  <div className="bg-haldiYellow-500 h-full rounded transition-all duration-500" style={{ width: `${completionRate}%` }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Subjects Grid Header */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+              <Icon name="trophy" className="w-6 h-6 text-haldiYellow-500" /> Subject Realms ({filteredSubjects.length})
+            </h2>
+          </div>
+
+          {/* Subjects Grid - Collectible RPG Quest Items */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredSubjects.map(sub => {
+              const pracCount = sub.practicals ? sub.practicals.length : 0;
+              const compCount = sub.practicals ? sub.practicals.filter(p => p.status === 'Completed').length : 0;
+              return (
+                <div
+                  key={sub.id}
+                  onClick={() => setCurrentRoute({ page: 'subject', subjectId: sub.id, practicalId: null })}
+                  className="group relative pixel-card pixel-card-hover rounded-2xl p-6 flex flex-col justify-between cursor-pointer border-3 border-royalPurple-900"
+                >
+                  <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${sub.color || 'from-royalPurple-600 to-royalPurple-800'}`} />
+                  <div>
+                    <div className="flex items-center justify-between mb-3 pt-1">
+                      <span className="px-3 py-1 text-xs font-mono font-extrabold bg-royalPurple-600 text-pixelCream rounded-md pixel-badge">
+                        {sub.code}
+                      </span>
+                      {isAdmin && (
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => { setEditingSub(sub); setIsModalOpen(true); }}
+                            className="p-1.5 text-slate-400 hover:text-royalPurple-600"
+                          >
+                            <Icon name="edit" className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => { if (confirm(`Delete realm "${sub.name}"?`)) deleteSubject(sub.id); }}
+                            className="p-1.5 text-slate-400 hover:text-rose-600"
+                          >
+                            <Icon name="trash" className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 group-hover:text-royalPurple-600 transition-colors mb-2 line-clamp-1">
+                      {sub.name}
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-6">
+                      {sub.description || "Collection of course practical quests."}
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t-2 border-royalPurple-900 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-pixel">
+                    <span className="font-bold text-royalPurple-900 dark:text-purple-200">{compCount}/{pracCount} Cleared</span>
+                    <span className="text-royalPurple-600 dark:text-haldiYellow-400 font-extrabold flex items-center gap-1">
+                      Enter Realm <Icon name="chevronRight" className="w-4 h-4" />
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Recent Quests Activity */}
+          {recentPracticals.length > 0 && (
+            <div className="space-y-4 pt-4">
+              <h3 className="text-xl font-pixel font-bold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="star" className="w-5 h-5 text-haldiYellow-500" /> Recent Quest Logs
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {recentPracticals.map(prac => (
+                  <div
+                    key={prac.id}
+                    onClick={() => setCurrentRoute({ page: 'details', subjectId: prac.subjectId, practicalId: prac.id })}
+                    className="pixel-card pixel-card-hover p-4 rounded-2xl flex items-center justify-between cursor-pointer border-2 border-royalPurple-900"
+                  >
+                    <div>
+                      <span className="text-[10px] font-pixel font-bold text-royalPurple-600 uppercase tracking-wider">{prac.subjectName}</span>
+                      <h4 className="text-sm font-bold text-royalPurple-900 dark:text-pixelCream line-clamp-1">{prac.title}</h4>
+                    </div>
+                    <span className="px-2.5 py-1 text-[10px] font-pixel font-bold rounded-lg bg-haldiYellow-500 text-royalPurple-950 pixel-badge">
+                      Q#{prac.practicalNo}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <SubjectModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSave={(obj) => {
+              if (editingSub) updateSubject(editingSub.id, obj);
+              else addSubject(obj);
+            }}
+            subjectToEdit={editingSub}
+          />
+        </div>
+      );
+    };
+
+    // Subject View Component
+    const SubjectView = () => {
+      const { data, isAdmin, currentRoute, setCurrentRoute, addPractical, updatePractical, duplicatePractical, deletePractical } = useContext(DataContext);
+      const [isPracModalOpen, setIsPracModalOpen] = useState(false);
+      const [editingPrac, setEditingPrac] = useState(null);
+      const [statusFilter, setStatusFilter] = useState('All');
+
+      const subject = data.subjects.find(s => s.id === currentRoute.subjectId);
+      if (!subject) return <div className="p-8 text-center font-pixel">Realm not found.</div>;
+
+      const practicalsList = subject.practicals || [];
+      const filtered = practicalsList.filter(p => statusFilter === 'All' || p.status === statusFilter);
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          <div className="flex items-center gap-2 text-xs font-pixel text-slate-500 mb-4">
+            <span onClick={() => setCurrentRoute({ page: 'home', subjectId: null, practicalId: null })} className="cursor-pointer hover:text-royalPurple-600 flex items-center gap-1 font-bold">
+              <Icon name="home" className="w-3.5 h-3.5" /> Home
+            </span>
+            <Icon name="chevronRight" className="w-3.5 h-3.5" />
+            <span className="text-royalPurple-900 dark:text-haldiYellow-400 font-extrabold">{subject.name}</span>
+          </div>
+
+          <div className="pixel-card rounded-3xl p-6 sm:p-8 border-4 border-royalPurple-900 bg-gradient-to-r from-royalPurple-700 to-royalPurple-800 text-pixelCream">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="px-3 py-1 text-xs font-mono font-bold bg-haldiYellow-500 text-royalPurple-950 rounded-md pixel-badge">
+                  {subject.code}
+                </span>
+                <h1 className="text-3xl font-extrabold font-pixel text-haldiYellow-400 mt-2">{subject.name}</h1>
+                <p className="text-xs text-royalPurple-100 mt-1">{subject.description}</p>
+              </div>
+              {isAdmin && (
+                <button
+                  onClick={() => { setEditingPrac(null); setIsPracModalOpen(true); }}
+                  className="px-5 py-3 rounded-xl pixel-btn bg-haldiYellow-500 text-royalPurple-950 font-pixel font-bold text-xs hover:bg-haldiYellow-400 inline-flex items-center gap-2 shadow-lg"
+                >
+                  <Icon name="plus" className="w-4 h-4" /> Craft Quest
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 font-pixel">
+            {['All', 'Completed', 'In Progress', 'Draft'].map(st => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold pixel-btn ${statusFilter === st ? 'bg-royalPurple-600 text-pixelCream' : 'bg-pixelCream text-slate-700'}`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            {filtered.map(prac => (
+              <div
+                key={prac.id}
+                onClick={() => setCurrentRoute({ page: 'details', subjectId: subject.id, practicalId: prac.id })}
+                className="pixel-card pixel-card-hover rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer border-3 border-royalPurple-900"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-royalPurple-600 text-haldiYellow-400 font-pixel font-extrabold flex items-center justify-center shrink-0 pixel-badge">
+                    Q{prac.practicalNo < 10 ? `0${prac.practicalNo}` : prac.practicalNo}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-pixel font-bold text-slate-500">Quest #{prac.practicalNo}</span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-pixel font-extrabold bg-haldiYellow-500 text-royalPurple-950 pixel-badge">
+                        {prac.status}
+                      </span>
+                    </div>
+                    <h4 className="text-lg font-bold text-royalPurple-900 dark:text-pixelCream mt-1">{prac.title}</h4>
+                    {prac.shortDescription && <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">{prac.shortDescription}</p>}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-center">
+                  <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-1">
+                    {isAdmin && (
+                      <>
+                        <button onClick={() => duplicatePractical(subject.id, prac.id)} title="Duplicate Practical" className="p-2 text-slate-500 hover:text-royalPurple-600">
+                          <Icon name="duplicate" className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => { setEditingPrac(prac); setIsPracModalOpen(true); }} title="Edit Metadata" className="p-2 text-slate-500 hover:text-royalPurple-600">
+                          <Icon name="edit" className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => { if (confirm(`Delete practical quest "${prac.title}"?`)) deletePractical(subject.id, prac.id); }} title="Delete Practical" className="p-2 text-slate-500 hover:text-rose-600">
+                          <Icon name="trash" className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <span className="text-xs font-pixel font-extrabold text-royalPurple-600 dark:text-haldiYellow-400 flex items-center gap-1 ml-2">
+                    Open Spellbook <Icon name="chevronRight" className="w-4 h-4" />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <PracticalModal
+            isOpen={isPracModalOpen}
+            onClose={() => setIsPracModalOpen(false)}
+            onSave={(obj) => {
+              if (editingPrac) updatePractical(subject.id, editingPrac.id, obj);
+              else addPractical(subject.id, obj);
+            }}
+            practicalToEdit={editingPrac}
+            nextNo={practicalsList.length + 1}
+          />
+        </div>
+      );
+    };
+
+    // Practical Details View with 14 Editable Sections
+    const PracticalDetailsView = () => {
+      const { data, isAdmin, currentRoute, setCurrentRoute, updatePractical, duplicatePractical, deletePractical, showToast } = useContext(DataContext);
+      const subject = data.subjects.find(s => s.id === currentRoute.subjectId);
+      const practical = subject?.practicals?.find(p => p.id === currentRoute.practicalId);
+
+      const [isEditing, setIsEditing] = useState(false);
+      const [sections, setSections] = useState({});
+      const [codeSections, setCodeSections] = useState([]);
+      const [table, setTable] = useState(null);
+      const [graphData, setGraphData] = useState(null);
+      const [vivaList, setVivaList] = useState([]);
+      const [copiedIdx, setCopiedIdx] = useState(null);
+      const [fullScreenCode, setFullScreenCode] = useState(null);
+
+      useEffect(() => {
+        if (practical) {
+          const secs = practical.sections || {};
+          setSections({
+            aim: secs.aim || practical.title || '',
+            objective: secs.objective || '',
+            theory: secs.theory || secs.information || '',
+            algorithm: secs.algorithm || secs.procedure || '',
+            flowchart: secs.flowchart || '',
+            output: secs.output || '',
+            observation: secs.observation || '',
+            result: secs.result || '',
+            conclusion: secs.conclusion || '',
+            references: secs.references || '',
+            discussion: secs.discussion || ''
+          });
+          setCodeSections(secs.codeSections || []);
+          setTable(secs.comparisonTable || {
+            title: "Algorithm Power & Complexity Matrix",
+            headers: ["Metric", "Approach A", "Approach B"],
+            rows: [["Time Complexity", "", ""], ["Space Complexity", "", ""]]
+          });
+          setGraphData(secs.graphData || {
+            title: "Execution Benchmark Chart",
+            type: "bar",
+            labels: ["Input 100", "Input 500", "Input 1000"],
+            datasets: [{ label: "Execution Time (ms)", data: [5, 25, 60] }]
+          });
+          setVivaList(secs.vivaQuestions || [
+            { q: "What is the time complexity of this algorithm?", a: "Best case: O(N log N), Worst case: O(N^2)" }
+          ]);
+        }
+      }, [practical]);
+
+      if (!subject || !practical) return <div className="p-8 text-center font-pixel">Practical not found.</div>;
+
+      const handleSave = () => {
+        updatePractical(subject.id, practical.id, {
+          title: sections.aim || practical.title,
+          sections: {
+            ...sections,
+            codeSections,
+            comparisonTable: table,
+            graphData,
+            vivaQuestions: vivaList
+          }
+        });
+        setIsEditing(false);
+      };
+
+      const handleCopyCode = (text, idx) => {
+        navigator.clipboard.writeText(text);
+        setCopiedIdx(idx);
+        showToast("📜 Code Copied to Clipboard!");
+        setTimeout(() => setCopiedIdx(null), 2000);
+      };
+
+      const addCodeSnippet = () => {
+        setCodeSections([...codeSections, { id: `c-${Date.now()}`, title: `Snippet #${codeSections.length + 1}`, language: 'cpp', code: '' }]);
+      };
+
+      const updateSectionText = (key, val) => {
+        setSections(prev => ({ ...prev, [key]: val }));
+      };
+
+      const formatText = (key, tag) => {
+        const selected = window.getSelection().toString();
+        if (!selected) return;
+        const currentVal = sections[key] || '';
+        let formatted = selected;
+        if (tag === 'b') formatted = `**${selected}**`;
+        if (tag === 'i') formatted = `*${selected}*`;
+        if (tag === 'u') formatted = `<u>${selected}</u>`;
+        if (tag === 'math') formatted = `$${selected}$`;
+        updateSectionText(key, currentVal.replace(selected, formatted));
+      };
+
+      return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          {/* Breadcrumbs */}
+          <div className="flex items-center gap-2 text-xs font-pixel text-slate-500 no-print">
+            <span onClick={() => setCurrentRoute({ page: 'home', subjectId: null, practicalId: null })} className="cursor-pointer hover:text-royalPurple-600 font-bold flex items-center gap-1">
+              <Icon name="home" className="w-3.5 h-3.5" /> Home
+            </span>
+            <Icon name="chevronRight" className="w-3.5 h-3.5" />
+            <span onClick={() => setCurrentRoute({ page: 'subject', subjectId: subject.id, practicalId: null })} className="cursor-pointer hover:text-royalPurple-600 font-bold">
+              {subject.name}
+            </span>
+            <Icon name="chevronRight" className="w-3.5 h-3.5" />
+            <span className="text-royalPurple-900 dark:text-haldiYellow-400 font-extrabold">Quest #{practical.practicalNo}</span>
+          </div>
+
+          {/* Practical Title Header Banner */}
+          <div className="pixel-card rounded-3xl p-6 sm:p-8 border-4 border-royalPurple-900 bg-gradient-to-r from-royalPurple-700 to-royalPurple-800 text-pixelCream shadow-2xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="px-3 py-1 text-xs font-mono font-extrabold bg-haldiYellow-500 text-royalPurple-950 rounded-md pixel-badge">
+                  Quest #{practical.practicalNo}
+                </span>
+                <h1 className="text-3xl font-extrabold font-pixel text-haldiYellow-400 mt-2">{practical.title}</h1>
+              </div>
+
+              {/* Practical Action Toolbar */}
+              <div className="flex flex-wrap items-center gap-2 no-print font-pixel">
+                <button
+                  onClick={() => window.print()}
+                  className="px-3.5 py-2 rounded-xl pixel-btn bg-royalPurple-600 text-pixelCream text-xs font-bold hover:bg-royalPurple-500 flex items-center gap-1.5"
+                  title="Print Lab Report"
+                >
+                  <Icon name="print" className="w-4 h-4" /> Print
+                </button>
+                {isAdmin ? (
+                  <>
+                    <button
+                      onClick={() => duplicatePractical(subject.id, practical.id)}
+                      className="px-3.5 py-2 rounded-xl pixel-btn bg-royalPurple-600 text-haldiYellow-400 text-xs font-bold hover:bg-royalPurple-500 flex items-center gap-1.5"
+                      title="Duplicate Quest"
+                    >
+                      <Icon name="duplicate" className="w-4 h-4" /> Clone
+                    </button>
+                    <button
+                      onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+                      className="px-4 py-2 rounded-xl pixel-btn bg-haldiYellow-500 text-royalPurple-950 text-xs font-extrabold hover:bg-haldiYellow-400 flex items-center gap-1.5 shadow-md"
+                    >
+                      <Icon name={isEditing ? 'check' : 'edit'} className="w-4 h-4" />
+                      {isEditing ? 'Save Quest' : 'Edit Spellbook'}
+                    </button>
+                    <button
+                      onClick={() => { if (confirm(`Delete Quest Practical #${practical.practicalNo}?`)) deletePractical(subject.id, practical.id); }}
+                      className="p-2.5 rounded-xl pixel-btn bg-rose-700 text-white hover:bg-rose-800"
+                      title="Delete Quest"
+                    >
+                      <Icon name="trash" className="w-4 h-4" />
+                    </button>
+                  </>
+                ) : (
+                  <span className="px-3.5 py-2 rounded-xl bg-pixelCream text-royalPurple-900 text-xs font-pixel font-bold flex items-center gap-1 pixel-badge">
+                    <Icon name="eye" className="w-4 h-4" /> View-Only
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 14 EDITABLE SECTIONS */}
+          <div className="space-y-8">
+            {/* Section 1: Aim */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="sword" className="w-5 h-5 text-haldiYellow-500" /> 1. Quest Aim
+              </h2>
+              {isEditing ? (
+                <input type="text" value={sections.aim} onChange={(e) => updateSectionText('aim', e.target.value)} className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-sm font-bold focus:outline-none" />
+              ) : (
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{sections.aim || "No aim defined."}</p>
+              )}
+            </div>
+
+            {/* Section 2: Objective */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="info" className="w-5 h-5 text-haldiYellow-500" /> 2. Objectives
+              </h2>
+              {isEditing ? (
+                <textarea rows="3" value={sections.objective} onChange={(e) => updateSectionText('objective', e.target.value)} placeholder="List objectives..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{sections.objective || "No objectives added."}</p>
+              )}
+            </div>
+
+            {/* Section 3: Theory */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                  <Icon name="book" className="w-5 h-5 text-haldiYellow-500" /> 3. Theory & Background
+                </h2>
+                {isEditing && (
+                  <div className="flex items-center gap-1 text-xs font-pixel">
+                    <button type="button" onClick={() => formatText('theory', 'b')} className="px-2 py-1 bg-haldiYellow-500 text-royalPurple-950 font-bold rounded">B</button>
+                    <button type="button" onClick={() => formatText('theory', 'i')} className="px-2 py-1 bg-haldiYellow-500 text-royalPurple-950 italic rounded">I</button>
+                    <button type="button" onClick={() => formatText('theory', 'u')} className="px-2 py-1 bg-haldiYellow-500 text-royalPurple-950 underline rounded">U</button>
+                    <button type="button" onClick={() => formatText('theory', 'math')} className="px-2 py-1 bg-haldiYellow-500 text-royalPurple-950 font-mono text-[10px]">Math</button>
+                  </div>
+                )}
+              </div>
+              {isEditing ? (
+                <textarea rows="6" value={sections.theory} onChange={(e) => updateSectionText('theory', e.target.value)} placeholder="Enter theory information..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{sections.theory || "No theory added."}</p>
+              )}
+            </div>
+
+            {/* Section 4: Algorithm */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="code" className="w-5 h-5 text-haldiYellow-500" /> 4. Algorithm Steps
+              </h2>
+              {isEditing ? (
+                <textarea rows="6" value={sections.algorithm} onChange={(e) => updateSectionText('algorithm', e.target.value)} placeholder="Step 1: Start..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs font-mono focus:outline-none" />
+              ) : (
+                <pre className="text-xs font-mono text-royalPurple-950 dark:text-pixelCream bg-royalPurple-50 dark:bg-royalPurple-900/50 p-4 rounded-xl border-2 border-royalPurple-900 whitespace-pre-wrap">{sections.algorithm || "No algorithm steps added."}</pre>
+              )}
+            </div>
+
+            {/* Section 5: Flowchart */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="table" className="w-5 h-5 text-haldiYellow-500" /> 5. Flowchart Diagram
+              </h2>
+              {isEditing ? (
+                <textarea rows="5" value={sections.flowchart} onChange={(e) => updateSectionText('flowchart', e.target.value)} placeholder="[START] -> [INPUT DATA] -> [PROCESS] -> [OUTPUT] -> [END]" className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs font-mono focus:outline-none" />
+              ) : (
+                <div className="p-4 rounded-xl bg-royalPurple-50 dark:bg-royalPurple-900/50 border-2 border-royalPurple-900 font-mono text-xs text-royalPurple-900 dark:text-haldiYellow-400 whitespace-pre-wrap">
+                  {sections.flowchart || "[START] ──> [PROCESS DATA] ──> [OUTPUT RESULT] ──> [END]"}
+                </div>
+              )}
+            </div>
+
+            {/* Section 6: Program Code */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                  <Icon name="code" className="w-5 h-5 text-haldiYellow-500" /> 6. Source Program Code
+                </h2>
+                {isEditing && (
+                  <button onClick={addCodeSnippet} className="px-3.5 py-1.5 rounded-xl text-xs font-pixel font-bold pixel-btn bg-haldiYellow-500 text-royalPurple-950">
+                    + Add Code Snippet
+                  </button>
+                )}
+              </div>
+
+              {codeSections.map((sec, idx) => (
+                <div key={sec.id || idx} className="rounded-2xl border-2 border-royalPurple-900 bg-royalPurple-900 text-pixelCream overflow-hidden shadow-lg">
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-royalPurple-800 border-b-2 border-royalPurple-950 font-pixel">
+                    <div className="flex items-center gap-3">
+                      {isEditing ? (
+                        <input type="text" value={sec.title} onChange={(e) => {
+                          const updated = [...codeSections]; updated[idx].title = e.target.value; setCodeSections(updated);
+                        }} className="bg-royalPurple-950 border border-royalPurple-600 px-2 py-1 text-xs font-bold text-haldiYellow-400 rounded" />
+                      ) : (
+                        <span className="text-xs font-extrabold text-haldiYellow-400">{sec.title || `Snippet #${idx + 1}`}</span>
+                      )}
+                      <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-royalPurple-950 text-pixelMint rounded">
+                        {sec.language || 'cpp'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setFullScreenCode(sec)} className="p-1 text-pixelCream hover:text-haldiYellow-400" title="Full Screen View">
+                        <Icon name="fullScreen" className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleCopyCode(sec.code, idx)} className="px-2.5 py-1 text-xs bg-royalPurple-950 hover:bg-royalPurple-700 text-haldiYellow-400 rounded flex items-center gap-1 pixel-badge">
+                        <Icon name={copiedIdx === idx ? 'check' : 'copy'} className="w-3.5 h-3.5" />
+                        {copiedIdx === idx ? 'Copied' : 'Copy Code'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Code Editor with Line Numbers */}
+                  <div className="flex p-4 overflow-x-auto text-xs font-mono">
+                    <div className="pr-4 border-r-2 border-royalPurple-800 text-purple-400 select-none text-right">
+                      {(sec.code || "").split('\n').map((_, lineIdx) => (
+                        <div key={lineIdx}>{lineIdx + 1}</div>
+                      ))}
+                    </div>
+                    <div className="pl-4 flex-1">
+                      {isEditing ? (
+                        <textarea rows="8" value={sec.code} onChange={(e) => {
+                          const updated = [...codeSections]; updated[idx].code = e.target.value; setCodeSections(updated);
+                        }} placeholder="Paste code snippet here..." className="w-full bg-transparent text-pixelCream focus:outline-none" />
+                      ) : (
+                        <pre className="text-pixelCream whitespace-pre-wrap"><code>{sec.code || "// No code entered."}</code></pre>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Section 7: Output */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="code" className="w-5 h-5 text-haldiYellow-500" /> 7. Program Output
+              </h2>
+              {isEditing ? (
+                <textarea rows="4" value={sections.output} onChange={(e) => updateSectionText('output', e.target.value)} placeholder="Console output result..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs font-mono focus:outline-none" />
+              ) : (
+                <pre className="text-xs font-mono text-pixelMint bg-royalPurple-950 p-4 rounded-xl border-2 border-royalPurple-900 whitespace-pre-wrap">{sections.output || "No output recorded."}</pre>
+              )}
+            </div>
+
+            {/* Section 8: Comparison Table & Graph */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-4">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="table" className="w-5 h-5 text-haldiYellow-500" /> 8. Comparison Table & Chart
+              </h2>
+
+              <div className="overflow-x-auto rounded-xl border-2 border-royalPurple-900 font-mono">
+                <table className="w-full text-xs text-left">
+                  <thead className="bg-royalPurple-700 text-haldiYellow-400 font-pixel">
+                    <tr>
+                      {table?.headers?.map((h, cIdx) => (
+                        <th key={cIdx} className="p-3 border-r-2 border-royalPurple-900 font-bold">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y-2 divide-royalPurple-900">
+                    {table?.rows?.map((row, rIdx) => (
+                      <tr key={rIdx} className="hover:bg-haldiYellow-100/50 dark:hover:bg-royalPurple-900/50">
+                        {row.map((cell, cIdx) => (
+                          <td key={cIdx} className="p-3 border-r-2 border-royalPurple-900 font-semibold">{cell || "—"}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {graphData && (
+                <div className="pt-4 border-t-2 border-royalPurple-900 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                      <Icon name="chart" className="w-4 h-4 text-haldiYellow-500" /> Graphical Analysis
+                    </h3>
+
+                    <div className="flex items-center gap-2 font-pixel">
+                      <label className="text-xs font-semibold">Chart Type:</label>
+                      <select
+                        value={graphData.type || 'bar'}
+                        onChange={(e) => setGraphData({ ...graphData, type: e.target.value })}
+                        className="bg-royalPurple-700 text-haldiYellow-400 border-2 border-royalPurple-900 text-xs px-2.5 py-1 rounded-lg font-bold"
+                      >
+                        <option value="bar">Bar Chart</option>
+                        <option value="line">Line Chart</option>
+                        <option value="pie">Pie Chart</option>
+                        <option value="doughnut">Doughnut Chart</option>
+                        <option value="radar">Radar Chart</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <InteractiveChart graphData={graphData} />
+                </div>
+              )}
+            </div>
+
+            {/* Section 9: Observation */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="info" className="w-5 h-5 text-haldiYellow-500" /> 9. Observations
+              </h2>
+              {isEditing ? (
+                <textarea rows="3" value={sections.observation} onChange={(e) => updateSectionText('observation', e.target.value)} placeholder="Observation notes..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{sections.observation || "No observations recorded."}</p>
+              )}
+            </div>
+
+            {/* Section 10: Result */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="check" className="w-5 h-5 text-haldiYellow-500" /> 10. Experimental Result
+              </h2>
+              {isEditing ? (
+                <textarea rows="3" value={sections.result} onChange={(e) => updateSectionText('result', e.target.value)} placeholder="Result findings..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{sections.result || "Verified experimental result."}</p>
+              )}
+            </div>
+
+            {/* Section 11: Conclusion */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="check" className="w-5 h-5 text-haldiYellow-500" /> 11. Conclusion
+              </h2>
+              {isEditing ? (
+                <textarea rows="4" value={sections.conclusion} onChange={(e) => updateSectionText('conclusion', e.target.value)} placeholder="Conclusion summary..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-sm text-slate-700 dark:text-slate-300 italic whitespace-pre-wrap">{sections.conclusion || "No conclusion entered."}</p>
+              )}
+            </div>
+
+            {/* Section 12: Viva Questions */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-4">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="info" className="w-5 h-5 text-haldiYellow-500" /> 12. Viva Voice Questions & Answers
+              </h2>
+              <div className="space-y-3">
+                {vivaList.map((v, vIdx) => (
+                  <div key={vIdx} className="p-4 rounded-xl bg-royalPurple-50 dark:bg-royalPurple-900/50 border-2 border-royalPurple-900 space-y-1">
+                    <p className="text-xs font-pixel font-bold text-royalPurple-900 dark:text-haldiYellow-400">Q{vIdx + 1}: {v.q}</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-300">Ans: {v.a}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Section 13: References */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="book" className="w-5 h-5 text-haldiYellow-500" /> 13. References & Citations
+              </h2>
+              {isEditing ? (
+                <textarea rows="3" value={sections.references} onChange={(e) => updateSectionText('references', e.target.value)} placeholder="Textbooks, documentation links..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{sections.references || "1. Introduction to Algorithms (CLRS)\n2. GeeksforGeeks DAA Portal"}</p>
+              )}
+            </div>
+
+            {/* Section 14: Discussion */}
+            <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
+              <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
+                <Icon name="info" className="w-5 h-5 text-haldiYellow-500" /> 14. Discussion & Edge Cases
+              </h2>
+              {isEditing ? (
+                <textarea rows="3" value={sections.discussion} onChange={(e) => updateSectionText('discussion', e.target.value)} placeholder="Discussion notes..." className="w-full bg-pixelCream dark:bg-royalPurple-900 border-2 border-royalPurple-900 rounded-xl p-3 text-xs focus:outline-none" />
+              ) : (
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{sections.discussion || "Discussion on memory overhead and recursion stack limits."}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Full Screen Code Modal */}
+          {fullScreenCode && (
+            <div className="fixed inset-0 z-50 p-6 bg-royalPurple-950/90 backdrop-blur-md flex flex-col justify-between font-mono">
+              <div className="flex items-center justify-between border-b-2 border-royalPurple-800 pb-4 font-pixel">
+                <h3 className="text-lg font-bold text-haldiYellow-400">{fullScreenCode.title} ({fullScreenCode.language})</h3>
+                <button onClick={() => setFullScreenCode(null)} className="px-4 py-2 pixel-btn bg-royalPurple-700 text-pixelCream text-xs font-bold rounded-xl">Close</button>
+              </div>
+              <pre className="flex-1 overflow-auto p-6 text-sm text-pixelCream leading-relaxed">
+                <code>{fullScreenCode.code}</code>
+              </pre>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // Main App Container
+    const App = () => {
+      const { isAuthenticated, currentRoute } = useContext(DataContext);
+
+      // MANDATORY LOGIN WALL: Opens Full-Screen World-Class Pixel Login Portal first!
+      if (!isAuthenticated) {
+        return <LoginPortalScreen />;
+      }
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          <div>
+            <Navbar />
+            <main>
+              {currentRoute.page === 'home' && <HomeView />}
+              {currentRoute.page === 'subject' && <SubjectView />}
+              {currentRoute.page === 'details' && <PracticalDetailsView />}
+            </main>
+          </div>
+          <ToastBanner />
+          <HistoryModal />
+          <footer className="py-6 border-t-4 border-royalPurple-900 bg-royalPurple-950 text-haldiYellow-400 font-pixel text-center text-xs">
+            PracticalShip — Pixel-Art Academic Practical Universe 🎮
+          </footer>
+        </div>
+      );
+    };
+
+    // Render React App
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <DataProvider>
+        <App />
+      </DataProvider>
+    );
+  </script>
+</body>
+
+</html>
