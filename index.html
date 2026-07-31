@@ -1739,6 +1739,147 @@
         updateSectionText(key, currentVal.replace(selected, formatted));
       };
 
+      // State for Code execution console outputs
+      const [consoleOutputs, setConsoleOutputs] = useState({});
+
+      // Runnable Code Engine
+      const runCodeSnippet = (sec, idx) => {
+        const lang = (sec.language || 'cpp').toLowerCase();
+        const code = sec.code || '';
+        const startTime = performance.now();
+
+        if (lang === 'js' || lang === 'javascript') {
+          try {
+            const logs = [];
+            const customConsole = {
+              log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')),
+              info: (...args) => logs.push("[INFO] " + args.join(' ')),
+              warn: (...args) => logs.push("[WARN] " + args.join(' ')),
+              error: (...args) => logs.push("[ERROR] " + args.join(' '))
+            };
+            const runner = new Function('console', code);
+            runner(customConsole);
+            const duration = (performance.now() - startTime).toFixed(2);
+            const outStr = logs.length > 0 ? logs.join('\n') : ">>> Execution finished successfully (0 logs).";
+            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: outStr, time: `${duration}ms`, status: 'success' } }));
+          } catch (err) {
+            const duration = (performance.now() - startTime).toFixed(2);
+            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: `[RUNTIME ERROR]: ${err.message}`, time: `${duration}ms`, status: 'error' } }));
+          }
+        } else if (lang === 'python' || lang === 'py') {
+          try {
+            const printMatches = code.match(/print\((.*?)\)/g);
+            let outLogs = [];
+            if (printMatches) {
+              outLogs = printMatches.map(m => m.replace(/^print\(/, '').replace(/\)$/, '').replace(/^['"]|['"]$/g, ''));
+            } else {
+              outLogs = [
+                ">>> [Python 3.11 Runtime Initialized]",
+                ">>> Algorithm executed successfully.",
+                ">>> Result: Array sorted in O(N log N) time."
+              ];
+            }
+            const duration = (performance.now() - startTime + 1.2).toFixed(2);
+            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: outLogs.join('\n'), time: `${duration}ms`, status: 'success' } }));
+          } catch (err) {
+            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: `[Python SyntaxError]: ${err.message}`, time: '0.8ms', status: 'error' } }));
+          }
+        } else {
+          const duration = (performance.now() - startTime + Math.random() * 3 + 2).toFixed(2);
+          const simulatedLogs = [
+            `>>> [${lang.toUpperCase()} Compiler v18.2 — Build Target: Release/x64]`,
+            `>>> Compiling & Executing ${sec.title || 'Algorithm'}...`,
+            `>>> Process started (PID: ${Math.floor(1000 + Math.random() * 9000)})`,
+            `--------------------------------------------------`,
+            `Output: Algorithm execution complete. No array bounds violations detected.`,
+            `--------------------------------------------------`,
+            `Process exited with code 0`
+          ].join('\n');
+          setConsoleOutputs(prev => ({ ...prev, [idx]: { output: simulatedLogs, time: `${duration}ms`, status: 'success' } }));
+        }
+      };
+
+      // Helper to auto-sync Chart.js Graph whenever Comparison Table is edited
+      const syncGraphFromTable = (newTable) => {
+        if (!newTable || !newTable.headers || !newTable.rows) return;
+        const headers = newTable.headers;
+        const rows = newTable.rows;
+        const labels = rows.map(r => r[0] || 'Metric');
+        const datasets = [];
+
+        for (let col = 1; col < headers.length; col++) {
+          const colName = headers[col] || `Approach ${col}`;
+          const numericData = rows.map(r => {
+            const val = parseFloat(r[col]);
+            return isNaN(val) ? Math.floor(Math.random() * 50 + 10) : val;
+          });
+          datasets.push({ label: colName, data: numericData });
+        }
+
+        setGraphData(prev => ({
+          ...prev,
+          title: newTable.title || "Real-Time Comparison Chart",
+          labels: labels.length > 0 ? labels : ["Sample 1"],
+          datasets: datasets.length > 0 ? datasets : [{ label: "Approach A", data: [10, 20] }]
+        }));
+      };
+
+      // Comparison Table Editing Handlers
+      const updateTableHeader = (cIdx, val) => {
+        const newHeaders = [...(table.headers || [])];
+        newHeaders[cIdx] = val;
+        const newTable = { ...table, headers: newHeaders };
+        setTable(newTable);
+        syncGraphFromTable(newTable);
+      };
+
+      const updateTableCell = (rIdx, cIdx, val) => {
+        const newRows = (table.rows || []).map((r, idx) => {
+          if (idx === rIdx) {
+            const updatedRow = [...r];
+            updatedRow[cIdx] = val;
+            return updatedRow;
+          }
+          return r;
+        });
+        const newTable = { ...table, rows: newRows };
+        setTable(newTable);
+        syncGraphFromTable(newTable);
+      };
+
+      const addTableColumn = () => {
+        const newHeaders = [...(table.headers || []), `Algorithm ${table.headers.length}`];
+        const newRows = (table.rows || []).map(r => [...r, "0"]);
+        const newTable = { ...table, headers: newHeaders, rows: newRows };
+        setTable(newTable);
+        syncGraphFromTable(newTable);
+      };
+
+      const addTableRow = () => {
+        const emptyRow = (table.headers || []).map((_, idx) => idx === 0 ? `Metric ${table.rows.length + 1}` : "0");
+        const newRows = [...(table.rows || []), emptyRow];
+        const newTable = { ...table, headers: table.headers, rows: newRows };
+        setTable(newTable);
+        syncGraphFromTable(newTable);
+      };
+
+      const deleteTableColumn = (colIndex) => {
+        if ((table.headers || []).length <= 2) return showToast("Must keep at least 1 data column", "error");
+        const newHeaders = table.headers.filter((_, idx) => idx !== colIndex);
+        const newRows = table.rows.map(r => r.filter((_, idx) => idx !== colIndex));
+        const newTable = { ...table, headers: newHeaders, rows: newRows };
+        setTable(newTable);
+        syncGraphFromTable(newTable);
+      };
+
+      const deleteTableRow = (rowIndex) => {
+        if ((table.rows || []).length <= 1) return showToast("Must keep at least 1 data row", "error");
+        const newRows = table.rows.filter((_, idx) => idx !== rowIndex);
+        const newTable = { ...table, rows: newRows };
+        setTable(newTable);
+        syncGraphFromTable(newTable);
+      };
+
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
           {/* Breadcrumbs */}
@@ -1879,176 +2020,6 @@
                 </div>
               )}
             </div>
-
-      // State for Code execution console outputs
-      const [consoleOutputs, setConsoleOutputs] = useState({});
-
-      // Runnable Code Engine
-      const runCodeSnippet = (sec, idx) => {
-        const lang = (sec.language || 'cpp').toLowerCase();
-        const code = sec.code || '';
-        const startTime = performance.now();
-
-        if (lang === 'js' || lang === 'javascript') {
-          try {
-            const logs = [];
-            const customConsole = {
-              log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')),
-              info: (...args) => logs.push("[INFO] " + args.join(' ')),
-              warn: (...args) => logs.push("[WARN] " + args.join(' ')),
-              error: (...args) => logs.push("[ERROR] " + args.join(' '))
-            };
-            const runner = new Function('console', code);
-            runner(customConsole);
-            const duration = (performance.now() - startTime).toFixed(2);
-            const outStr = logs.length > 0 ? logs.join('\n') : ">>> Execution finished successfully (0 logs).";
-            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: outStr, time: `${duration}ms`, status: 'success' } }));
-          } catch (err) {
-            const duration = (performance.now() - startTime).toFixed(2);
-            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: `[RUNTIME ERROR]: ${err.message}`, time: `${duration}ms`, status: 'error' } }));
-          }
-        } else if (lang === 'python' || lang === 'py') {
-          // Python execution engine
-          try {
-            const printMatches = code.match(/print\((.*?)\)/g);
-            let outLogs = [];
-            if (printMatches) {
-              outLogs = printMatches.map(m => m.replace(/^print\(/, '').replace(/\)$/, '').replace(/^['"]|['"]$/g, ''));
-            } else {
-              outLogs = [
-                ">>> [Python 3.11 Runtime Initialized]",
-                ">>> Algorithm executed successfully.",
-                ">>> Result: Array sorted in O(N log N) time."
-              ];
-            }
-            const duration = (performance.now() - startTime + 1.2).toFixed(2);
-            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: outLogs.join('\n'), time: `${duration}ms`, status: 'success' } }));
-          } catch (err) {
-            setConsoleOutputs(prev => ({ ...prev, [idx]: { output: `[Python SyntaxError]: ${err.message}`, time: '0.8ms', status: 'error' } }));
-          }
-        } else {
-          // C++, C, Java, Go, Rust, PHP simulated execution engine
-          const duration = (performance.now() - startTime + Math.random() * 3 + 2).toFixed(2);
-          const simulatedLogs = [
-            `>>> [${lang.toUpperCase()} Compiler v18.2 — Build Target: Release/x64]`,
-            `>>> Compiling & Executing ${sec.title || 'Algorithm'}...`,
-            `>>> Process started (PID: ${Math.floor(1000 + Math.random() * 9000)})`,
-            `--------------------------------------------------`,
-            `Output: Algorithm execution complete. No array bounds violations detected.`,
-            `--------------------------------------------------`,
-            `Process exited with code 0`
-          ].join('\n');
-          setConsoleOutputs(prev => ({ ...prev, [idx]: { output: simulatedLogs, time: `${duration}ms`, status: 'success' } }));
-        }
-      };
-
-      // Helper to auto-sync Chart.js Graph whenever Comparison Table is edited
-      const syncGraphFromTable = (newTable) => {
-        if (!newTable || !newTable.headers || !newTable.rows) return;
-        const headers = newTable.headers; // e.g. ["Metric", "Approach A", "Approach B"]
-        const rows = newTable.rows;       // e.g. [ ["Time (ms)", "12", "5"], ["Space (KB)", "100", "40"] ]
-
-        const labels = rows.map(r => r[0] || 'Metric'); // Row metrics
-        const datasets = [];
-
-        // For each column after index 0 (each algorithm/approach)
-        for (let col = 1; col < headers.length; col++) {
-          const colName = headers[col] || `Approach ${col}`;
-          const numericData = rows.map(r => {
-            const val = parseFloat(r[col]);
-            return isNaN(val) ? Math.floor(Math.random() * 50 + 10) : val;
-          });
-          datasets.push({ label: colName, data: numericData });
-        }
-
-        setGraphData(prev => ({
-          ...prev,
-          title: newTable.title || "Real-Time Comparison Chart",
-          labels: labels.length > 0 ? labels : ["Sample 1"],
-          datasets: datasets.length > 0 ? datasets : [{ label: "Approach A", data: [10, 20] }]
-        }));
-      };
-
-      // Comparison Table Editing Handlers
-      const updateTableHeader = (cIdx, val) => {
-        const newHeaders = [...(table.headers || [])];
-        newHeaders[cIdx] = val;
-        const newTable = { ...table, headers: newHeaders };
-        setTable(newTable);
-        syncGraphFromTable(newTable);
-      };
-
-      const updateTableCell = (rIdx, cIdx, val) => {
-        const newRows = (table.rows || []).map((r, idx) => {
-          if (idx === rIdx) {
-            const updatedRow = [...r];
-            updatedRow[cIdx] = val;
-            return updatedRow;
-          }
-          return r;
-        });
-        const newTable = { ...table, rows: newRows };
-        setTable(newTable);
-        syncGraphFromTable(newTable);
-      };
-
-      const addTableColumn = () => {
-        const newHeaders = [...(table.headers || []), `Algorithm ${table.headers.length}`];
-        const newRows = (table.rows || []).map(r => [...r, "0"]);
-        const newTable = { ...table, headers: newHeaders, rows: newRows };
-        setTable(newTable);
-        syncGraphFromTable(newTable);
-      };
-
-      const addTableRow = () => {
-        const emptyRow = (table.headers || []).map((_, idx) => idx === 0 ? `Metric ${table.rows.length + 1}` : "0");
-        const newRows = [...(table.rows || []), emptyRow];
-        const newTable = { ...table, headers: newHeaders, rows: newRows };
-        setTable(newTable);
-        syncGraphFromTable(newTable);
-      };
-
-      const deleteTableColumn = (colIndex) => {
-        if ((table.headers || []).length <= 2) return showToast("Must keep at least 1 data column", "error");
-        const newHeaders = table.headers.filter((_, idx) => idx !== colIndex);
-        const newRows = table.rows.map(r => r.filter((_, idx) => idx !== colIndex));
-        const newTable = { ...table, headers: newHeaders, rows: newRows };
-        setTable(newTable);
-        syncGraphFromTable(newTable);
-      };
-
-      const deleteTableRow = (rowIndex) => {
-        if ((table.rows || []).length <= 1) return showToast("Must keep at least 1 data row", "error");
-        const newRows = table.rows.filter((_, idx) => idx !== rowIndex);
-        const newTable = { ...table, rows: newRows };
-        setTable(newTable);
-        syncGraphFromTable(newTable);
-      };
-
-      return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-          {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-xs font-pixel text-slate-500 no-print">
-            <span onClick={() => setCurrentRoute({ page: 'home', subjectId: null, practicalId: null })} className="cursor-pointer hover:text-royalPurple-600 font-bold flex items-center gap-1">
-              <Icon name="home" className="w-3.5 h-3.5" /> Home
-            </span>
-            <Icon name="chevronRight" className="w-3.5 h-3.5" />
-            <span onClick={() => setCurrentRoute({ page: 'subject', subjectId: subject.id, practicalId: null })} className="cursor-pointer hover:text-royalPurple-600 font-bold">
-              {subject.name}
-            </span>
-            <Icon name="chevronRight" className="w-3.5 h-3.5" />
-            <span className="text-royalPurple-900 dark:text-haldiYellow-400 font-extrabold">Quest #{practical.practicalNo}</span>
-          </div>
-
-          {/* Practical Title Header Banner */}
-          <div className="pixel-card rounded-3xl p-6 sm:p-8 border-4 border-royalPurple-900 bg-gradient-to-r from-royalPurple-700 to-royalPurple-800 text-pixelCream shadow-2xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <span className="px-3 py-1 text-xs font-mono font-extrabold bg-haldiYellow-500 text-royalPurple-950 rounded-md pixel-badge">
-                  Quest #{practical.practicalNo}
-                </span>
-                <h1 className="text-3xl font-extrabold font-pixel text-haldiYellow-400 mt-2">{practical.title}</h1>
-              </div>
 
               {/* Practical Action Toolbar */}
               <div className="flex flex-wrap items-center gap-2 no-print font-pixel">
