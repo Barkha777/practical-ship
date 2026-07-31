@@ -2020,51 +2020,6 @@
                 </div>
               )}
             </div>
-
-              {/* Practical Action Toolbar */}
-              <div className="flex flex-wrap items-center gap-2 no-print font-pixel">
-                <button
-                  onClick={() => window.print()}
-                  className="px-3.5 py-2 rounded-xl pixel-btn bg-royalPurple-600 text-pixelCream text-xs font-bold hover:bg-royalPurple-500 flex items-center gap-1.5"
-                  title="Print Lab Report"
-                >
-                  <Icon name="print" className="w-4 h-4" /> Print
-                </button>
-                {isAdmin ? (
-                  <>
-                    <button
-                      onClick={() => duplicatePractical(subject.id, practical.id)}
-                      className="px-3.5 py-2 rounded-xl pixel-btn bg-royalPurple-600 text-haldiYellow-400 text-xs font-bold hover:bg-royalPurple-500 flex items-center gap-1.5"
-                      title="Duplicate Quest"
-                    >
-                      <Icon name="duplicate" className="w-4 h-4" /> Clone
-                    </button>
-                    <button
-                      onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                      className="px-4 py-2 rounded-xl pixel-btn bg-haldiYellow-500 text-royalPurple-950 text-xs font-extrabold hover:bg-haldiYellow-400 flex items-center gap-1.5 shadow-md"
-                    >
-                      <Icon name={isEditing ? 'check' : 'edit'} className="w-4 h-4" />
-                      {isEditing ? 'Save Quest' : 'Edit Spellbook'}
-                    </button>
-                    <button
-                      onClick={() => { if (confirm(`Delete Quest Practical #${practical.practicalNo}?`)) deletePractical(subject.id, practical.id); }}
-                      className="p-2.5 rounded-xl pixel-btn bg-rose-700 text-white hover:bg-rose-800"
-                      title="Delete Quest"
-                    >
-                      <Icon name="trash" className="w-4 h-4" />
-                    </button>
-                  </>
-                ) : (
-                  <span className="px-3.5 py-2 rounded-xl bg-pixelCream text-royalPurple-900 text-xs font-pixel font-bold flex items-center gap-1 pixel-badge">
-                    <Icon name="eye" className="w-4 h-4" /> View-Only
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 14 EDITABLE SECTIONS */}
-          <div className="space-y-8">
             {/* Section 1: Aim */}
             <div className="pixel-card rounded-3xl p-6 border-3 border-royalPurple-900 space-y-3">
               <h2 className="text-lg font-pixel font-extrabold text-royalPurple-900 dark:text-haldiYellow-400 flex items-center gap-2">
