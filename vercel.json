@@ -1,3 +1,5 @@
 {
+  "framework": null,
+  "buildCommand": "node -e \"const fs=require('fs'); fs.mkdirSync('dist', {recursive:true}); fs.copyFileSync('index.html', 'dist/index.html');\"",
   "outputDirectory": "dist"
 }
