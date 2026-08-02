@@ -504,8 +504,16 @@
         if (!supabase) return;
         async function fetchCloudData() {
           try {
-            const { data: cloudSubjects, error } = await supabase.from('subjects').select('*');
-            const { data: cloudPracticals } = await supabase.from('practicals').select('*');
+            const { data: cloudSubjects, error: subErr } = await supabase.from('subjects').select('*');
+            const { data: cloudPracticals, error: pracErr } = await supabase.from('practicals').select('*');
+            
+            if (subErr) {
+              console.error("Supabase Subjects Fetch Error (Check Row Level Security RLS in Supabase Dashboard):", subErr);
+            }
+            if (pracErr) {
+              console.error("Supabase Practicals Fetch Error:", pracErr);
+            }
+
             if (cloudSubjects && cloudSubjects.length > 0) {
               const formattedSubjects = cloudSubjects.map(s => ({
                 ...s,
@@ -520,6 +528,12 @@
                 }))
               }));
               setData({ subjects: formattedSubjects });
+            } else if (cloudSubjects && cloudSubjects.length === 0) {
+              // Cloud DB is empty -> Auto-seed default initial data
+              initialData.subjects.forEach(sub => {
+                syncSubjectToCloud(sub);
+                (sub.practicals || []).forEach(prac => syncPracticalToCloud(sub.id, prac));
+              });
             }
           } catch (err) { console.error("Cloud fetch error:", err); }
         }
