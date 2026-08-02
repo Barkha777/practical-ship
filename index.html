@@ -627,6 +627,51 @@
 
       const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
+      // Cloud Database Write Helpers
+      const syncSubjectToCloud = async (subObj) => {
+        if (!supabase) return;
+        try {
+          await supabase.from('subjects').upsert([{
+            id: subObj.id,
+            name: subObj.name,
+            code: subObj.code || '',
+            description: subObj.description || '',
+            color: subObj.color || ''
+          }]);
+        } catch (err) { console.error("Cloud subject sync error:", err); }
+      };
+
+      const deleteSubjectFromCloud = async (subjectId) => {
+        if (!supabase) return;
+        try {
+          await supabase.from('practicals').delete().eq('subject_id', subjectId);
+          await supabase.from('subjects').delete().eq('id', subjectId);
+        } catch (err) { console.error("Cloud subject delete error:", err); }
+      };
+
+      const syncPracticalToCloud = async (subjectId, pracObj) => {
+        if (!supabase) return;
+        try {
+          await supabase.from('practicals').upsert([{
+            id: pracObj.id,
+            subject_id: subjectId,
+            practical_no: pracObj.practicalNo || 1,
+            title: pracObj.title || 'Untitled',
+            short_description: pracObj.shortDescription || '',
+            status: pracObj.status || 'Draft',
+            updated_at: pracObj.updatedAt || new Date().toISOString().slice(0, 10),
+            sections: pracObj.sections || {}
+          }]);
+        } catch (err) { console.error("Cloud practical sync error:", err); }
+      };
+
+      const deletePracticalFromCloud = async (practicalId) => {
+        if (!supabase) return;
+        try {
+          await supabase.from('practicals').delete().eq('id', practicalId);
+        } catch (err) { console.error("Cloud practical delete error:", err); }
+      };
+
       const addSubject = (subObj) => {
         if (!isAdmin) return showToast("Permission Denied: Only Admin can create subjects", "error");
         const newSub = {
@@ -638,6 +683,7 @@
           practicals: []
         };
         setData(prev => ({ ...prev, subjects: [...prev.subjects, newSub] }));
+        syncSubjectToCloud(newSub);
         logEdit("Created Subject Realm", newSub.name, newSub.name);
         showToast("🎮 Subject Realm Unlocked!");
       };
@@ -645,10 +691,12 @@
       const updateSubject = (id, fields) => {
         if (!isAdmin) return showToast("Permission Denied: Only Admin can edit subjects", "error");
         const sub = data.subjects.find(s => s.id === id);
+        const updatedSub = { ...sub, ...fields };
         setData(prev => ({
           ...prev,
-          subjects: prev.subjects.map(s => s.id === id ? { ...s, ...fields } : s)
+          subjects: prev.subjects.map(s => s.id === id ? updatedSub : s)
         }));
+        syncSubjectToCloud(updatedSub);
         logEdit("Updated Subject", fields.name || sub?.name, fields.name || sub?.name);
         showToast("✨ Subject Realm Updated!");
       };
@@ -660,6 +708,7 @@
           ...prev,
           subjects: prev.subjects.filter(s => s.id !== id)
         }));
+        deleteSubjectFromCloud(id);
         logEdit("Deleted Subject", sub?.name, sub?.name);
         showToast("💥 Subject Realm Destroyed!", "error");
         if (currentRoute.subjectId === id) {
@@ -714,6 +763,7 @@
           ...prev,
           subjects: prev.subjects.map(s => s.id === subjectId ? { ...s, practicals: [...s.practicals, newPrac] } : s)
         }));
+        syncPracticalToCloud(subjectId, newPrac);
         logEdit("Added Quest Practical", newPrac.title, subject?.name);
         showToast("📜 Quest Practical Crafting Complete!");
       };
@@ -722,6 +772,7 @@
         if (!isAdmin) return showToast("Permission Denied: Only Admin can edit practicals", "error");
         const subject = data.subjects.find(s => s.id === subjectId);
         const sourcePrac = subject?.practicals?.find(p => p.id === practicalId);
+        const updatedPrac = { ...sourcePrac, ...fields, updatedAt: new Date().toISOString().slice(0, 10) };
 
         setData(prev => ({
           ...prev,
@@ -729,12 +780,13 @@
             if (s.id === subjectId) {
               return {
                 ...s,
-                practicals: s.practicals.map(p => p.id === practicalId ? { ...p, ...fields, updatedAt: new Date().toISOString().slice(0, 10) } : p)
+                practicals: s.practicals.map(p => p.id === practicalId ? updatedPrac : p)
               };
             }
             return s;
           })
         }));
+        syncPracticalToCloud(subjectId, updatedPrac);
         logEdit("Updated Practical", fields.title || sourcePrac?.title, subject?.name);
         showToast("💾 Saved to Pixel Spellbook!");
       };
@@ -757,6 +809,7 @@
           ...prev,
           subjects: prev.subjects.map(s => s.id === subjectId ? { ...s, practicals: [...s.practicals, cloned] } : s)
         }));
+        syncPracticalToCloud(subjectId, cloned);
         logEdit("Duplicated Practical", cloned.title, subject?.name);
         showToast("✨ Practical Item Cloned!");
       };
@@ -770,6 +823,7 @@
           ...prev,
           subjects: prev.subjects.map(s => s.id === subjectId ? { ...s, practicals: s.practicals.filter(p => p.id !== practicalId) } : s)
         }));
+        deletePracticalFromCloud(practicalId);
         logEdit("Deleted Practical", sourcePrac?.title, subject?.name);
         showToast("💥 Practical Item Vaporized!", "error");
         if (currentRoute.practicalId === practicalId) {
@@ -793,6 +847,12 @@
         if (!isAdmin) return showToast("Permission Denied: Only Admin can import data", "error");
         if (jsonObj && Array.isArray(jsonObj.subjects)) {
           setData(jsonObj);
+          if (supabase) {
+            jsonObj.subjects.forEach(sub => {
+              syncSubjectToCloud(sub);
+              (sub.practicals || []).forEach(prac => syncPracticalToCloud(sub.id, prac));
+            });
+          }
           logEdit("Imported Backup JSON", "Entire Database Restore", "All Realms");
           showToast("⚡ World Database Restored!");
         } else {
