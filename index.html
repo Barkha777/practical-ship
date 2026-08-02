@@ -684,8 +684,8 @@
         };
         setData(prev => ({ ...prev, subjects: [...prev.subjects, newSub] }));
         syncSubjectToCloud(newSub);
-        logEdit("Created Subject Realm", newSub.name, newSub.name);
-        showToast("🎮 Subject Realm Unlocked!");
+        logEdit("Created Subject", newSub.name, newSub.name);
+        showToast("🎮 Subject Unlocked!");
       };
 
       const updateSubject = (id, fields) => {
@@ -884,8 +884,8 @@
       return (
         <div className="fixed bottom-6 right-6 z-50 animate-bounce">
           <div className={`px-5 py-3 rounded-2xl pixel-card flex items-center gap-3 font-pixel text-xs font-bold ${toast.type === 'error'
-              ? 'bg-rose-900 text-rose-100 border-rose-500'
-              : 'bg-haldiYellow-500 text-royalPurple-900 border-royalPurple-900'
+            ? 'bg-rose-900 text-rose-100 border-rose-500'
+            : 'bg-haldiYellow-500 text-royalPurple-900 border-royalPurple-900'
             }`}>
             <Icon name={toast.type === 'error' ? 'trash' : 'star'} className="w-5 h-5 text-royalPurple-900 dark:text-haldiYellow-500" />
             <span>{toast.message}</span>
@@ -2178,7 +2178,7 @@
                         ) : (
                           <span className="text-xs font-extrabold text-haldiYellow-400">{sec.title || `Snippet #${idx + 1}`}</span>
                         )}
-                        
+
                         {/* Language Selector */}
                         <div className="flex items-center gap-1">
                           <label className="text-[10px] text-purple-300 font-mono">Language:</label>
